@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
     private LoginFragment loginFragment;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     }
 
     @Override
-    public void notifyDone(boolean success) {
+    public void notifyDone() {
         //Look at SwitchFragmentExample
         //For switch to map fragment if login is successful
 //        FragmentManager fragmentManager = this.getSupportFragmentManager();

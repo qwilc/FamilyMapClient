@@ -36,9 +36,10 @@ public class LoginFragment extends Fragment {
     private Logger logger = Logger.getLogger("LoginFragment");
 
     private static final String LOGIN_SUCCESS_KEY = "LoginSuccessKey";
+    private static final String REGISTER_SUCCESS_KEY = "RegisterSuccessKey";
 
     public interface Listener {
-        void notifyDone(boolean success);
+        void notifyDone();
     }
 
     public void registerListener(Listener listener) {
@@ -118,9 +119,9 @@ public class LoginFragment extends Fragment {
                             Bundle bundle = message.getData();
                             boolean success = bundle.getBoolean(LOGIN_SUCCESS_KEY, false);
 
-                            logger.fine("In handleMessage. Success: " + success);
+                            logger.fine("In loginHandler.handleMessage. Success: " + success);
 
-                            String toast = "Login toast";
+                            String toast;
                             if (!success) {
                                 toast = "Login Failed";
                             } else {
@@ -133,7 +134,7 @@ public class LoginFragment extends Fragment {
                             Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
 
                             if (success) {
-                                listener.notifyDone(true);
+                                listener.notifyDone();
                             }
                         }
                     };
@@ -147,9 +148,32 @@ public class LoginFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Handler registerHandler = new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        Bundle bundle = message.getData();
+                        boolean success = bundle.getBoolean(REGISTER_SUCCESS_KEY);
 
+                        logger.fine("In registerHandler.handleMessage. Success: " + success);
 
-                listener.notifyDone(result.isSuccess());
+                        String toast;
+                        if (!success) {
+                            toast = "Registration Failed";
+                        } else {
+                            toast = DataCache.getUserFullName();
+                        }
+                        logger.finer(toast);
+                        Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
+
+                        if(success) {
+                            listener.notifyDone();
+                        }
+                    }
+                };
+
+                RegisterTask registerTask = new RegisterTask(registerHandler, loginView);
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.submit(registerTask);
             }
         });
 
@@ -212,8 +236,7 @@ public class LoginFragment extends Fragment {
                 sendMessage(result);
             }
         }
-
-        private void sendMessage(LoginRegisterResult result) {
+        private void sendMessage(LoginRegisterResult result) { //TODO: repeated code
             Message message = Message.obtain();
 
             Bundle messageBundle = new Bundle();
@@ -227,6 +250,7 @@ public class LoginFragment extends Fragment {
     private static class RegisterTask implements Runnable {
         private Handler messageHandler;
         private View loginView;
+        private final Logger logger = Logger.getLogger("RegisterTask");
 
         public RegisterTask(Handler messageHandler, View loginView) {
             this.messageHandler = messageHandler;
@@ -235,6 +259,9 @@ public class LoginFragment extends Fragment {
 
         @Override
         public void run() {
+            LoggerConfig.configureLogger(logger, Level.FINEST);
+            logger.fine("In RegsterTask.run");
+
             String serverHost = ( (EditText) loginView.findViewById(R.id.edit_text_server_host) ).getText().toString();
             String serverPort = ( (EditText) loginView.findViewById(R.id.edit_text_server_port) ).getText().toString();
 
@@ -259,9 +286,21 @@ public class LoginFragment extends Fragment {
 
             RegisterRequest request = new RegisterRequest(username, password, firstName, lastName, email, gender);
 
+            logger.fine("Calling serverProxy.register");
             LoginRegisterResult result = serverProxy.register(request);
 
+            sendMessage(result);
+        }
 
+        private void sendMessage(LoginRegisterResult result) { //TODO: repeated code
+            assert result != null;
+            Message message = Message.obtain();
+
+            Bundle messageBundle = new Bundle();
+            messageBundle.putBoolean(REGISTER_SUCCESS_KEY, result.isSuccess());
+            message.setData(messageBundle);
+
+            messageHandler.sendMessage(message);
         }
     }
 }
