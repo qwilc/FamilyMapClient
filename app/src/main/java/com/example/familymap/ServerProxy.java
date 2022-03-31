@@ -27,7 +27,7 @@ public class ServerProxy {
     private final Logger logger = Logger.getLogger("ServerProxy");
 
     public ServerProxy (String serverHost, String serverPort) {
-        LoggerConfig.configureLogger(logger, Level.FINEST);
+        LoggerConfig.configureLogger(logger, Level.FINE);
         this.serverHost = serverHost;
         this.serverPort = serverPort;
     }

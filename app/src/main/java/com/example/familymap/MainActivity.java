@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     public void notifyDone() {
         //Look at SwitchFragmentExample
         //For switch to map fragment if login is successful
-//        FragmentManager fragmentManager = this.getSupportFragmentManager();
-//        Fragment fragment = new MapFragment();
-//
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.fragment_frame_layout, fragment)
-//                .commit();
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        Fragment fragment = new MapFragment();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_frame_layout, fragment)
+                .commit();
     }
 }

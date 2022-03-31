@@ -22,5 +22,7 @@
     <string name="female_prompt">Female</string>
     <string name="register_button_label">Register</string>
     <string name="sign_in_button_label">Sign In</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

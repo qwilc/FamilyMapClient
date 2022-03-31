@@ -125,7 +125,7 @@ public class LoginFragment extends Fragment {
                             if (!success) {
                                 toast = "Login Failed";
                             } else {
-                                toast = DataCache.getUserFullName();
+                                toast = DataCache.getUserFullName() + " is logged in";
                             }
 
                             logger.finest(getActivity().toString());
@@ -160,7 +160,7 @@ public class LoginFragment extends Fragment {
                         if (!success) {
                             toast = "Registration Failed";
                         } else {
-                            toast = DataCache.getUserFullName();
+                            toast = DataCache.getUserFullName() + " is registered";
                         }
                         logger.finer(toast);
                         Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
@@ -284,7 +284,7 @@ public class LoginFragment extends Fragment {
                 gender = "f";
             }
 
-            RegisterRequest request = new RegisterRequest(username, password, firstName, lastName, email, gender);
+            RegisterRequest request = new RegisterRequest(username, password, email, firstName, lastName, gender);
 
             logger.fine("Calling serverProxy.register");
             LoginRegisterResult result = serverProxy.register(request);
