@@ -2,11 +2,14 @@ package handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+
+import logger.LoggerConfig;
 import request.LoginRequest;
 import result.LoginRegisterResult;
 import service.LoginService;
 
 import java.io.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoginHandler extends Handler {
@@ -14,6 +17,7 @@ public class LoginHandler extends Handler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        LoggerConfig.configureLogger(logger, Level.FINEST);
         try {
             if (hasCorrectRequestMethod(exchange, "post")) {
                 String requestData = getRequestData(exchange);
@@ -27,7 +31,7 @@ public class LoginHandler extends Handler {
                 LoginRegisterResult result = service.login(request);
 
                 success = result.isSuccess();
-                logger.info(result.getMessage());
+                logger.fine("Result message: " + result.getMessage());
 
                 sendResponse(exchange, result);
             }

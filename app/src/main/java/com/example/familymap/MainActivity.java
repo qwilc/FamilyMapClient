@@ -6,7 +6,10 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
+import java.util.logging.Logger;
+
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
+    private Logger logger = Logger.getLogger("MainActivity");
     private LoginFragment loginFragment;
 
     @Override
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
     @Override
     public void notifyDone() {
+        logger.info("In notifyDone");
         //Look at SwitchFragmentExample
         //For switch to map fragment if login is successful
         FragmentManager fragmentManager = this.getSupportFragmentManager();

@@ -1,5 +1,6 @@
 package com.example.familymap;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.familymap.logger.LoggerConfig;
@@ -210,6 +212,7 @@ public class LoginFragment extends Fragment {
             this.loginView = loginView;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void run() {
             LoggerConfig.configureLogger(logger, Level.FINEST);
@@ -231,6 +234,7 @@ public class LoginFragment extends Fragment {
 
             logger.fine("About to call login");
             LoginRegisterResult result = serverProxy.login(request);
+            logger.fine("Called login");
 
             if(result != null) {
                 sendMessage(result);
@@ -260,7 +264,7 @@ public class LoginFragment extends Fragment {
         @Override
         public void run() {
             LoggerConfig.configureLogger(logger, Level.FINEST);
-            logger.fine("In RegsterTask.run");
+            logger.fine("In RegisterTask.run");
 
             String serverHost = ( (EditText) loginView.findViewById(R.id.edit_text_server_host) ).getText().toString();
             String serverPort = ( (EditText) loginView.findViewById(R.id.edit_text_server_port) ).getText().toString();

@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<!--<fragment-->
-<!--    android:id="@+id/login_fragment"-->
-<!--    class="com.example.familymap.LoginFragment"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_width="match_parent"/>-->
-
     <FrameLayout
         android:id="@+id/fragment_frame_layout"
         android:layout_height="match_parent"

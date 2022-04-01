@@ -13,10 +13,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.logging.Logger;
+
+import model.Event;
+
 public class MapFragment extends Fragment {
+    private Logger logger = Logger.getLogger("MapFragment");
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -31,9 +39,16 @@ public class MapFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng sydney = new LatLng(-34, 151);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            logger.info("In onMapReady");
+            for(String eventID : DataCache.getEvents().keySet()) { //TODO: Better way to iterate?
+                Event event = DataCache.getEvents().get(eventID);
+                assert event != null;
+                Float eventColor = DataCache.getEventColors().get(event.getEventType());
+
+                Marker marker = googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(event.getLatitude(), event.getLongitude() ) )
+                        .icon(BitmapDescriptorFactory.defaultMarker(eventColor) ) );
+            }
         }
     };
 
