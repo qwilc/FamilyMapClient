@@ -28,7 +28,7 @@
                         android:layout_height="wrap_content"
                         android:layout_span="3"
                         android:inputType="text"
-                        android:text="10.0.2.2"/>
+                        android:text="localhost"/>
                 </TableRow>
 
                 <TableRow>

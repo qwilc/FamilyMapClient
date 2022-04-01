@@ -17,7 +17,7 @@ public class LoginHandler extends Handler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        LoggerConfig.configureLogger(logger, Level.FINEST);
+        LoggerConfig.configureLogger(logger, Level.INFO);
         try {
             if (hasCorrectRequestMethod(exchange, "post")) {
                 String requestData = getRequestData(exchange);

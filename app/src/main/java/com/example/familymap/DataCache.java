@@ -29,18 +29,31 @@ public class DataCache {
     //Set<PersonID> maternalAncestors
     //Settings settings
 
-    private static final Float[] colors = { //TODO: Does this work with the whole float vs Float thing?
-            BitmapDescriptorFactory.HUE_AZURE,
-            BitmapDescriptorFactory.HUE_BLUE,
-            BitmapDescriptorFactory.HUE_CYAN,
-            BitmapDescriptorFactory.HUE_GREEN,
-            BitmapDescriptorFactory.HUE_MAGENTA,
-            BitmapDescriptorFactory.HUE_ORANGE,
-            BitmapDescriptorFactory.HUE_RED,
-            BitmapDescriptorFactory.HUE_ROSE,
-            BitmapDescriptorFactory.HUE_VIOLET,
-            BitmapDescriptorFactory.HUE_YELLOW };
-    private static Map<String, Float> eventColors;
+//    private static final float[] colors = {
+//            BitmapDescriptorFactory.HUE_AZURE,
+//            BitmapDescriptorFactory.HUE_BLUE,
+//            BitmapDescriptorFactory.HUE_CYAN,
+//            BitmapDescriptorFactory.HUE_GREEN,
+//            BitmapDescriptorFactory.HUE_MAGENTA,
+//            BitmapDescriptorFactory.HUE_ORANGE,
+//            BitmapDescriptorFactory.HUE_RED,
+//            BitmapDescriptorFactory.HUE_ROSE,
+//            BitmapDescriptorFactory.HUE_VIOLET,
+//            BitmapDescriptorFactory.HUE_YELLOW };
+
+        private static final float[] colors = { //TODO: Does this work with the whole float vs Float thing?
+                BitmapDescriptorFactory.HUE_YELLOW,
+                BitmapDescriptorFactory.HUE_AZURE,
+                BitmapDescriptorFactory.HUE_ROSE,
+                BitmapDescriptorFactory.HUE_GREEN,
+                BitmapDescriptorFactory.HUE_RED,
+                BitmapDescriptorFactory.HUE_BLUE,
+                BitmapDescriptorFactory.HUE_ORANGE,
+                BitmapDescriptorFactory.HUE_VIOLET,
+                BitmapDescriptorFactory.HUE_CYAN,
+                BitmapDescriptorFactory.HUE_MAGENTA,
+             };
+    private static HashMap<String, Float> eventColors;
 
     public static DataCache getInstance() {
         if(instance == null) {
@@ -87,7 +100,6 @@ public class DataCache {
         return events;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void fillData(ServerProxy serverProxy) {
         fillPeopleData(serverProxy);
         fillEventData(serverProxy);
@@ -101,7 +113,7 @@ public class DataCache {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N) //TODO: I have no idea what this actually does but the IDE said to use it
+    @RequiresApi(api = Build.VERSION_CODES.N) //TODO: Get rid of any of these that remain
     private static void fillEventData(ServerProxy serverProxy) {
         AllEventsResult eventResult = serverProxy.getEvents();
         events = new HashMap<>();
@@ -121,15 +133,16 @@ public class DataCache {
         return user.getFirstName() + " " + user.getLastName();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void setEventColors() {
+    public static void setEventColors() { //TODO: fix so i only increments when something is added
         int i = 0;
+        eventColors = new HashMap<>();
         for(String eventID : events.keySet()) { //TODO: Better way to loop? Should I just use an iterator?
-            eventColors.putIfAbsent(events.get(eventID).getEventType().toLowerCase(), colors[i]);
-            if(i >= colors.length - 1) {
+            String eventType = events.get(eventID).getEventType().toLowerCase();
+            Float putReturnValue = eventColors.putIfAbsent(eventType, (Float) colors[i]);
+            if(putReturnValue == null && i >= colors.length - 1) {
                 i = 0;
             }
-            else {
+            else if(putReturnValue == null){
                 i++;
             }
         }
