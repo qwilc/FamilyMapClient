@@ -58,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:layout_span="3"
                         android:inputType="text"
-                        android:text="x"/>
+                        android:text="sheila"/>
                 </TableRow>
 
                 <TableRow>
@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:layout_span="3"
                         android:inputType="textPassword"
-                        android:text="x"/>
+                        android:text="parker"/>
                 </TableRow>
 
                 <TableRow>

@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.example.familymap.logger.LoggerConfig;
+import logger.LoggerConfig;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -99,7 +99,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) { //TODO: Do I even need to override this?
         super.onCreate(savedInstanceState);
         LoggerConfig.configureLogger(logger, Level.FINEST);
     }
@@ -240,6 +240,7 @@ public class LoginFragment extends Fragment {
                 sendMessage(result);
             }
         }
+
         private void sendMessage(LoginRegisterResult result) { //TODO: repeated code
             Message message = Message.obtain();
 

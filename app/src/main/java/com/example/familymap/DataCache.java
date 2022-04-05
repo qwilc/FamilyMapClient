@@ -7,7 +7,9 @@ import androidx.annotation.RequiresApi;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -24,9 +26,9 @@ public class DataCache {
     private static String userId;
     private static Map<String, Person> people;
     private static Map<String, Event> events;
-    //Map<PersonID, List<Events>> personEvents;
-    //Set<PersonID> paternalAncestors
-    //Set<PersonID> maternalAncestors
+    private static Map<String, HashSet<Event>> personEvents;
+    private static HashSet<String> paternalAncestors;
+    private static HashSet<String> maternalAncestors;
     //Settings settings
 
 //    private static final float[] colors = {
@@ -113,12 +115,50 @@ public class DataCache {
         }
     }
 
+    private static void fillAncestorData() {
+        Person user = getPersonByID(userId);
+
+        String fatherID = user.getFatherID();
+        if(fatherID != null) {
+            paternalAncestors = getPersonAncestors(fatherID);
+        }
+
+        String motherID = user.getMotherID();
+        if(motherID != null) {
+            maternalAncestors = getPersonAncestors(user.getMotherID());
+        }
+    }
+
+    private static HashSet<String> getPersonAncestors(String personID) {
+        HashSet<String> ancestors = new HashSet<>();
+        getPersonAncestorsHelper(ancestors, personID);
+        return ancestors;
+    }
+
+    private static void getPersonAncestorsHelper(HashSet<String> ancestors, String personID) {
+        ancestors.add(personID);
+
+        Person person = getPersonByID(personID);
+
+        if(person.getFatherID() != null) {
+            getPersonAncestorsHelper(ancestors, person.getFatherID());
+        }
+
+        if(person.getMotherID() != null) {
+            getPersonAncestorsHelper(ancestors, person.getMotherID());
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N) //TODO: Get rid of any of these that remain
     private static void fillEventData(ServerProxy serverProxy) {
         AllEventsResult eventResult = serverProxy.getEvents();
         events = new HashMap<>();
+        personEvents = new HashMap<>();
         for(Event event : eventResult.getData()) {
             events.put(event.getEventID(), event);
+
+            personEvents.putIfAbsent(event.getPersonID(), new HashSet<>());
+            personEvents.get(event.getPersonID()).add(event);
         }
 
         setEventColors();
@@ -129,16 +169,20 @@ public class DataCache {
     }
 
     public static String getUserFullName() {
-        Person user = getPersonByID(userId);
-        return user.getFirstName() + " " + user.getLastName();
+        return getPersonFullName(userId);
     }
 
-    public static void setEventColors() { //TODO: fix so i only increments when something is added
+    public static String getPersonFullName(String personId) {
+        Person person = getPersonByID(personId);
+        return person.getFirstName() + " " + person.getLastName();
+    }
+
+    public static void setEventColors() {
         int i = 0;
         eventColors = new HashMap<>();
         for(String eventID : events.keySet()) { //TODO: Better way to loop? Should I just use an iterator?
             String eventType = events.get(eventID).getEventType().toLowerCase();
-            Float putReturnValue = eventColors.putIfAbsent(eventType, (Float) colors[i]);
+            Float putReturnValue = eventColors.putIfAbsent(eventType, colors[i]);
             if(putReturnValue == null && i >= colors.length - 1) {
                 i = 0;
             }

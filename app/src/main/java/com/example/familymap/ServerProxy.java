@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.example.familymap.logger.LoggerConfig;
+import logger.LoggerConfig;
 import com.google.gson.Gson;
 
 import request.LoginRequest;

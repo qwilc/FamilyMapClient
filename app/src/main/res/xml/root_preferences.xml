@@ -1,0 +1,75 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!--    <PreferenceCategory app:title="@string/messages_header">-->
+
+<!--        <EditTextPreference-->
+<!--            app:key="signature"-->
+<!--            app:title="@string/signature_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+<!--        <ListPreference-->
+<!--            app:defaultValue="reply"-->
+<!--            app:entries="@array/reply_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="reply"-->
+<!--            app:title="@string/reply_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+<!--    </PreferenceCategory>-->
+
+    <PreferenceCategory>
+
+        <SwitchPreferenceCompat
+            app:key="life_story"
+            app:title="Life Story Lines"
+            app:summary="Show life story lines"/>
+
+        <SwitchPreferenceCompat
+            app:key="family_tree"
+            app:title="Family Tree Lines"
+            app:summary="Show family tree lines"/>
+
+        <SwitchPreferenceCompat
+            app:key="spouse"
+            app:title="Spouse Lines"
+            app:summary="Show spouse lines"/>
+
+        <SwitchPreferenceCompat
+            app:key="father_side"
+            app:title="Father's Side"
+            app:summary="Filter by father's side of family"/>
+
+        <SwitchPreferenceCompat
+            app:key="mother_side"
+            app:title="Mother's Side"
+            app:summary="Filter by mother's side of family"/>
+
+        <SwitchPreferenceCompat
+            app:key="male_events"
+            app:title="Male Events"
+            app:summary="Filter events by gender"/>
+
+        <SwitchPreferenceCompat
+            app:key="female_events"
+            app:title="Female Events"
+            app:summary="Filter events by gender"/>
+
+        <Preference
+            app:key="logout"
+            app:title="Log Out"
+            app:summary="Return to login screen"/>
+
+<!--        <SwitchPreferenceCompat-->
+<!--            app:key="sync"-->
+<!--            app:title="@string/sync_title" />-->
+
+<!--        <SwitchPreferenceCompat-->
+<!--            app:dependency="sync"-->
+<!--            app:key="attachment"-->
+<!--            app:summaryOff="@string/attachment_summary_off"-->
+<!--            app:summaryOn="@string/attachment_summary_on"-->
+<!--            app:title="@string/attachment_title" />-->
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
