@@ -212,7 +212,6 @@ public class LoginFragment extends Fragment {
             this.loginView = loginView;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void run() {
             LoggerConfig.configureLogger(logger, Level.FINEST);

@@ -59,6 +59,8 @@ public class MapFragment extends Fragment {
                 public boolean onMarkerClick(@NonNull Marker marker) {
                     Event event = (Event) marker.getTag();
                     assert event != null;
+                    DataCache.setSelectedEvent(event);
+
                     LatLng eventLatLng = new LatLng(event.getLatitude(), event.getLongitude() );
                     googleMap.animateCamera(CameraUpdateFactory.newLatLng(eventLatLng) );
 
@@ -70,7 +72,7 @@ public class MapFragment extends Fragment {
                     String eventYear = Integer.toString(event.getYear() );
                     String eventLocation = event.getCity() + ", " + event.getCountry();
 
-                    String eventDetails = personName + " (" + personGender + ")\n"
+                    String eventDetails = personName + " (" + personGender + ")\n" //TODO: Should probably use DataCache.eventInfoString
                             + eventType + ": " + eventYear + "\n"
                             + eventLocation;
 
@@ -88,7 +90,11 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+
+        if(!DataCache.isEventActivity()) {
+            setHasOptionsMenu(true);
+        }
+
         Iconify.with(new FontAwesomeModule());
     }
 
@@ -138,6 +144,7 @@ public class MapFragment extends Fragment {
         eventDetailsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DataCache.setSelectedPerson(DataCache.getSelectedEvent().getPersonID());
                 Intent intent = new Intent(getActivity(), PersonActivity.class);
                 startActivity(intent);
             }

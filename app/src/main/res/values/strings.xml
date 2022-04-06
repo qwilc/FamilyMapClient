@@ -22,26 +22,17 @@
     <string name="female_prompt">Female</string>
     <string name="register_button_label">Register</string>
     <string name="sign_in_button_label">Sign In</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="select_marker_prompt">Select a marker to see event details</string>
     <string name="menu_label_settings">Settings</string>
     <string name="menu_label_search">Search</string>
+    <!-- TODO: Remove this -->
     <string name="title_activity_settings2">SettingsActivity2</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="male_label">Male</string>
+    <string name="female_label">Female</string>
+    <string name="first_name_person_activity">First Name</string>
+    <string name="last_name_person_activity">Last Name</string>
+    <string name="gender_person_activity">Gender</string>
+    <string name="family_title">Family</string>
+    <string name="events_title">Events</string>
 
 </resources>

@@ -1,17 +1,14 @@
 package com.example.familymap;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import model.Event;
 import model.Person;
@@ -26,9 +23,13 @@ public class DataCache {
     private static String userId;
     private static Map<String, Person> people;
     private static Map<String, Event> events;
-    private static Map<String, HashSet<Event>> personEvents;
+    private static Map<String, SortedSet<Event>> personEvents;
     private static HashSet<String> paternalAncestors;
     private static HashSet<String> maternalAncestors;
+    private static boolean isEventActivity = false;
+    private static Person selectedPerson;
+    private static Event selectedEvent;
+
     //Settings settings
 
 //    private static final float[] colors = {
@@ -43,7 +44,7 @@ public class DataCache {
 //            BitmapDescriptorFactory.HUE_VIOLET,
 //            BitmapDescriptorFactory.HUE_YELLOW };
 
-        private static final float[] colors = { //TODO: Does this work with the whole float vs Float thing?
+        private static final float[] colors = {
                 BitmapDescriptorFactory.HUE_YELLOW,
                 BitmapDescriptorFactory.HUE_AZURE,
                 BitmapDescriptorFactory.HUE_ROSE,
@@ -102,9 +103,30 @@ public class DataCache {
         return events;
     }
 
+    public static Person getSelectedPerson() {
+        return selectedPerson;
+    }
+
+    public static void setSelectedPerson(Person selectedPerson) {
+        DataCache.selectedPerson = selectedPerson;
+    }
+
+    public static void setSelectedPerson(String personID) {
+        selectedPerson = people.get(personID);
+    }
+
+    public static Event getSelectedEvent() {
+        return selectedEvent;
+    }
+
+    public static void setSelectedEvent(Event selectedEvent) {
+        DataCache.selectedEvent = selectedEvent;
+    }
+
     public static void fillData(ServerProxy serverProxy) {
         fillPeopleData(serverProxy);
         fillEventData(serverProxy);
+        fillAncestorData();
     }
 
     private static void fillPeopleData(ServerProxy serverProxy) {
@@ -149,7 +171,6 @@ public class DataCache {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N) //TODO: Get rid of any of these that remain
     private static void fillEventData(ServerProxy serverProxy) {
         AllEventsResult eventResult = serverProxy.getEvents();
         events = new HashMap<>();
@@ -157,7 +178,7 @@ public class DataCache {
         for(Event event : eventResult.getData()) {
             events.put(event.getEventID(), event);
 
-            personEvents.putIfAbsent(event.getPersonID(), new HashSet<>());
+            personEvents.putIfAbsent(event.getPersonID(), new TreeSet<>());
             personEvents.get(event.getPersonID()).add(event);
         }
 
@@ -196,6 +217,60 @@ public class DataCache {
         return eventColors;
     }
 
+    public static boolean isEventActivity() {
+        return isEventActivity;
+    }
+
+    public static String eventInfoString(Event event) {
+        return event.getEventType().toUpperCase() + ": "
+                + event.getCity() + ", " + event.getCountry()
+                + " (" + event.getYear() + ")";
+    }
+
+    public static SortedSet<Event> getPersonEvents(Person person) {
+        String personID = person.getPersonID();
+        return personEvents.get(personID);
+    }
+
+    public static List<Person> getSelectedPersonFamily() { //TODO: Does this need to be filtered?
+        List<Person> family = new ArrayList();
+
+        String fatherID = selectedPerson.getFatherID();
+        String motherID = selectedPerson.getMotherID();
+        String spouseID = selectedPerson.getSpouseID();
+
+        addToFamily(fatherID, family);
+        addToFamily(motherID, family);
+        addToFamily(spouseID, family);
+        addChildrenToFamily(family);
+
+        return family;
+    }
+
+    private static void addChildrenToFamily (List<Person> family) {
+        for(String personID : people.keySet()) { //TODO: Better iteration method?
+            Person person = people.get(personID);
+            assert person != null;
+
+            String parentID;
+            if(selectedPerson.getGender().equals("m")) {
+                parentID = person.getFatherID();
+            }
+            else {
+                parentID = person.getMotherID();
+            }
+
+            if(parentID.equals(selectedPerson.getPersonID() ) ) {
+                addToFamily(personID, family);
+            }
+        }
+    }
+
+    private static void addToFamily(String personID, List<Person> family) {
+        if(personID != null) {
+            family.add(getPersonByID(personID));
+        }
+    }
+
     //getEventByID(eventID)
-    //List<Event> getPersonEvents
 }

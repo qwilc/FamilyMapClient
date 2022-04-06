@@ -62,8 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     @Override
     public void notifyDone() {
         logger.info("In notifyDone");
-        //Look at SwitchFragmentExample
-        //For switch to map fragment if login is successful
+
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment fragment = new MapFragment();
 

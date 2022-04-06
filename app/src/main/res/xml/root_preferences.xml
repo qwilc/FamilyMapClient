@@ -37,22 +37,26 @@
         <SwitchPreferenceCompat
             app:key="father_side"
             app:title="Father's Side"
-            app:summary="Filter by father's side of family"/>
+            app:summary="Filter by father's side of family"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             app:key="mother_side"
             app:title="Mother's Side"
-            app:summary="Filter by mother's side of family"/>
+            app:summary="Filter by mother's side of family"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             app:key="male_events"
             app:title="Male Events"
-            app:summary="Filter events by gender"/>
+            app:summary="Filter events by gender"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             app:key="female_events"
             app:title="Female Events"
-            app:summary="Filter events by gender"/>
+            app:summary="Filter events by gender"
+            app:defaultValue="true"/>
 
         <Preference
             app:key="logout"

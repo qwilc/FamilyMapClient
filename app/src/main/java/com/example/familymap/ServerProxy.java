@@ -36,7 +36,6 @@ public class ServerProxy {
         this.serverPort = serverPort;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public LoginRegisterResult login (LoginRequest request) {
         try {
             URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/login");
@@ -63,7 +62,6 @@ public class ServerProxy {
     }
 
     //TODO: Exact same as login except for request parameter and URL. How do I fix this? Parent Request class?
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public LoginRegisterResult register (RegisterRequest request) {
         try {
             URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/register");
@@ -88,7 +86,6 @@ public class ServerProxy {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void storeSessionData(LoginRegisterResult result) {
         if(result.isSuccess()) {
             DataCache.setAuthtoken(result.getAuthtoken());

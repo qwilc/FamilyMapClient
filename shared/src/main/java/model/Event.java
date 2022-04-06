@@ -7,7 +7,7 @@ import java.util.UUID;
  * The Event class stores the data for a row of the event table in the database.
  * Contains fields for eventID, associated username, personID, latitude, longitude, country, city, event type, and year, as well as the corresponding getters and setters
  */
-public class Event extends Model {
+public class Event extends Model implements Comparable {
     /**
      * The unique identifier
      */
@@ -171,5 +171,21 @@ public class Event extends Model {
                 && Objects.equals(country, event.country)
                 && Objects.equals(city, event.city)
                 && Objects.equals(eventType, event.eventType);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        assert getClass() == o.getClass();
+
+        Event event = (Event) o;
+        if(this.getYear() > event.getYear()) {
+            return 1;
+        }
+        else if(this.getYear() == event.getYear()) {
+            return this.getEventType().compareTo(event.getEventType());
+        }
+        else {
+            return -1;
+        }
     }
 }
