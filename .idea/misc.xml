@@ -3,16 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_event.xml" value="0.10989583333333333" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_person.xml" value="0.4" />
-        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_search.xml" value="0.1109375" />
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_person.xml" value="0.29296875" />
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_search.xml" value="0.16799999999999998" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_settings.xml" value="0.1109375" />
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/activity_up_navigating.xml" value="0.1171875" />
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/event_item.xml" value="0.4" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/event_line.xml" value="0.25" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/expandable_list_group.xml" value="0.25" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/fragment_login.xml" value="0.2" />
-        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/fragment_map.xml" value="0.264" />
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/fragment_map.xml" value="0.2" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/fragment_maps.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/person_item.xml" value="0.29296875" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/person_line.xml" value="0.2359375" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/layout/settings_activity.xml" value="0.25" />
         <entry key="..\:/Users/qgwil/AndroidStudioProjects/FamilyMap/app/src/main/res/menu/menu.xml" value="0.25" />

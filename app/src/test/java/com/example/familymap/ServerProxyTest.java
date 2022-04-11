@@ -5,10 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import request.LoginRequest;
+import request.RegisterRequest;
 import result.LoginRegisterResult;
 
 public class ServerProxyTest {
-    private final ServerProxy serverProxy = new ServerProxy("192.168.0.153", "8080");;
+    private final ServerProxy serverProxy = new ServerProxy("localhost", "8080");;
 
     @Test
     public void testLoginPass() {
@@ -57,6 +58,16 @@ public class ServerProxyTest {
 
     @Test
     public void testRegisterPass() {
+        RegisterRequest request = new RegisterRequest();
+        request.setUsername("new_username");
+        request.setPassword("password");
+        request.setFirstName("First");
+        request.setLastName("Last");
+
+    }
+
+    @Test
+    public void testRegisterFail() {
 
     }
 }

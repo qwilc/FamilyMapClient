@@ -133,7 +133,7 @@ public class LoginFragment extends Fragment {
                             logger.finest(getActivity().toString());
                             logger.finest(getContext().toString());
                             logger.finer(toast);
-                            Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), toast, Toast.LENGTH_SHORT).show();
 
                             if (success) {
                                 listener.notifyDone();

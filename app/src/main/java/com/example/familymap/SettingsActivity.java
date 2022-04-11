@@ -46,6 +46,29 @@ public class SettingsActivity extends UpNavigatingActivity {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
+            preferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    logger.info("In sharedPreferenceChanged");
+                    switch(key) {
+                        case "life_story":
+                            DataCache.setShowLifeStoryLines(preferences.getBoolean("life_story", true));
+                        case "family_tree":
+                            DataCache.setShowAncestorLines(preferences.getBoolean("family_tree", true));
+                        case "spouse":
+                            DataCache.setShowSpouseLines(preferences.getBoolean("spouse", true));
+                        case "father_side":
+                            DataCache.setShowFatherSide(preferences.getBoolean("father_side", true));
+                        case "mother_side":
+                            DataCache.setShowMotherSide(preferences.getBoolean("mother_side", true));
+                        case "male_events":
+                            DataCache.setShowMaleEvents(preferences.getBoolean("male_events", true));
+                        case "female_events":
+                            DataCache.setShowFemaleEvents(preferences.getBoolean("female_events", true));
+                    }
+                }
+            });
+
             logger.finer("Mother's side" + String.valueOf(preferences.getBoolean("mother_side", true)));
 
             //TODO: Logout probably doesn't need to be a preference, but i need to go change that in root_preferences.xml
@@ -55,9 +78,10 @@ public class SettingsActivity extends UpNavigatingActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     logger.info("In logout onPreferenceClick");
-                    Intent intent= new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    DataCache.setIsEventActivity(false);
                     startActivity(intent);
-                    //TODO: MAKE SURE YOU RESET EVERYTHING!!! datacache, maybe settings?
+                    //TODO: MAKE SURE YOU RESET EVERYTHING!!! datacache, maybe settings? not settings and everything else might be reset as it's needed
                     return true;
                 }
             });

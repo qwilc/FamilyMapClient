@@ -1,18 +1,18 @@
 package com.example.familymap;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.SortedSet;
 
 import model.Event;
+import model.FamilyMember;
 import model.Person;
 
 public class PersonActivity extends UpNavigatingActivity {
@@ -39,8 +39,13 @@ public class PersonActivity extends UpNavigatingActivity {
 
         ExpandableListView expandableListView = findViewById(R.id.expandableListView);
 
-        List<Person> family = DataCache.getSelectedPersonFamily();
-        SortedSet<Event> events = DataCache.getPersonEvents(DataCache.getSelectedPerson());
+        DataCache.setSelectedPersonFamily(); //TODO: Should I combine set/get methods?
+        List<FamilyMember> family = DataCache.getSelectedPersonFamily();
+        List<Event> events = DataCache.getPersonEvents(DataCache.getSelectedPerson());
+
+        expandableListView.setAdapter(new ExpandableListAdapter(family, events));
+        expandableListView.expandGroup(0);
+        expandableListView.expandGroup(1);
     }
 
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -48,10 +53,10 @@ public class PersonActivity extends UpNavigatingActivity {
         private static final int FAMILY_GROUP_POSITION = 0;
         private static final int EVENT_GROUP_POSITION = 1;
 
-        private List<Person> family;
+        private List<FamilyMember> family;
         private List<Event> events;
 
-        public ExpandableListAdapter(List<Person> family, List<Event> events) {
+        public ExpandableListAdapter(List<FamilyMember> family, List<Event> events) {
             this.family = family;
             this.events = events;
         }
@@ -142,7 +147,47 @@ public class PersonActivity extends UpNavigatingActivity {
 
         private void initializeFamilyView(View personItemView, final int childPosition) {
             TextView personNameView = personItemView.findViewById(R.id.person_item_name);
-            personNameView.setText(family.get(childPosition).getFirstName());
+            personNameView.setText(family.get(childPosition).getFullName());
+
+            TextView personRelationView = personItemView.findViewById(R.id.person_item_relationship);
+            personRelationView.setText(family.get(childPosition).getRelation());
+
+            ImageView personIconView = personItemView.findViewById(R.id.person_item_icon);
+            Person person = DataCache.getPersonByID(family.get(childPosition).getPersonID());
+            personIconView.setImageDrawable(DataCache.getGenderIcon(person, PersonActivity.this));
+
+            personItemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(PersonActivity.this, "You clicked " + personNameView.getText(), Toast.LENGTH_SHORT).show();
+                    DataCache.setSelectedPerson(family.get(childPosition).getPersonID());
+                    Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
+        private void initializeEventView(View eventItemView, final int childPosition) {
+            if(DataCache.isEventShown(events.get(childPosition))) {
+                TextView eventDetailView = eventItemView.findViewById(R.id.event_item_details);
+                eventDetailView.setText(DataCache.eventInfoString(events.get(childPosition)));
+
+                TextView eventPersonView = eventItemView.findViewById(R.id.event_item_person);
+                eventPersonView.setText(DataCache.getFullName(events.get(childPosition).getPersonID()));
+
+                ImageView eventIconView = eventItemView.findViewById(R.id.event_item_icon);
+                eventIconView.setImageDrawable(DataCache.getEventIcon(PersonActivity.this));
+
+                eventItemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Toast.makeText(PersonActivity.this, "You clicked " + eventDetailView.getText(), Toast.LENGTH_SHORT).show();
+                        DataCache.setSelectedEvent(events.get(childPosition));
+                        Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
         }
 
         @Override

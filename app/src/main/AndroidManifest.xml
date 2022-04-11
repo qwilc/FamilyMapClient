@@ -18,6 +18,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".EventActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".SettingsActivity2"
             android:exported="false"
             android:label="@string/title_activity_settings2" />

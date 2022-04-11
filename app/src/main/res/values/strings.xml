@@ -33,6 +33,6 @@
     <string name="last_name_person_activity">Last Name</string>
     <string name="gender_person_activity">Gender</string>
     <string name="family_title">Family</string>
-    <string name="events_title">Events</string>
+    <string name="events_title">Life Events</string>
 
 </resources>

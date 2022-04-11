@@ -22,17 +22,20 @@
         <SwitchPreferenceCompat
             app:key="life_story"
             app:title="Life Story Lines"
-            app:summary="Show life story lines"/>
+            app:summary="Show life story lines"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             app:key="family_tree"
             app:title="Family Tree Lines"
-            app:summary="Show family tree lines"/>
+            app:summary="Show family tree lines"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             app:key="spouse"
             app:title="Spouse Lines"
-            app:summary="Show spouse lines"/>
+            app:summary="Show spouse lines"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             app:key="father_side"

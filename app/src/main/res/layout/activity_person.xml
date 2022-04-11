@@ -14,12 +14,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/sublabel"
             android:text="@string/first_name_person_activity"/>
 
         <TextView
             android:id="@+id/person_first_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/main_label"
             tools:text="Sheila"/>
 
         <View
@@ -31,12 +33,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/sublabel"
             android:text="@string/last_name_person_activity"/>
 
         <TextView
             android:id="@+id/person_last_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/main_label"
             tools:text="Parker"/>
 
         <View
@@ -48,22 +52,32 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/sublabel"
             android:text="@string/gender_person_activity"/>
 
         <TextView
             android:id="@+id/person_gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/main_label"
             tools:text="Female"/>
 
-    </LinearLayout>
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:textSize="@dimen/sublabel"
+            android:background="?android:attr/listDivider" />
 
-<ExpandableListView
-    android:id="@+id/expandableListView"
-    android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-    android:dividerHeight="0.5dp"
-    android:divider="@android:color/darker_gray"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+            android:dividerHeight="0.5dp"
+            android:divider="@android:color/darker_gray"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
