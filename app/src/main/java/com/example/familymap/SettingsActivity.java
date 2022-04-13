@@ -45,6 +45,7 @@ public class SettingsActivity extends UpNavigatingActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+            DataCache.initializeSettings(preferences);
 
             preferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
@@ -71,7 +72,6 @@ public class SettingsActivity extends UpNavigatingActivity {
 
             logger.finer("Mother's side" + String.valueOf(preferences.getBoolean("mother_side", true)));
 
-            //TODO: Logout probably doesn't need to be a preference, but i need to go change that in root_preferences.xml
             Preference logout = findPreference("logout");
             assert logout != null;
             logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -79,7 +79,7 @@ public class SettingsActivity extends UpNavigatingActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     logger.info("In logout onPreferenceClick");
                     Intent intent = new Intent(getActivity(), MainActivity.class);
-                    DataCache.setIsEventActivity(false);
+                    DataCache.resetData();
                     startActivity(intent);
                     //TODO: MAKE SURE YOU RESET EVERYTHING!!! datacache, maybe settings? not settings and everything else might be reset as it's needed
                     return true;

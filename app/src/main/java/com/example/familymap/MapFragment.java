@@ -81,7 +81,7 @@ public class MapFragment extends Fragment {
                 DataCache.setSelectedEvent(event);
                 DataCache.setSelectedPerson(event.getPersonID());
 
-                map.clear(); //TODO: I really just need to remove and redraw the polylines - array of polylines?
+                map.clear();
                 addEventMarkers();
                 drawPolyLines();
 
@@ -172,6 +172,7 @@ public class MapFragment extends Fragment {
         eventDetailsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DataCache.saveSelectedEvent();
                 DataCache.setSelectedPerson(DataCache.getSelectedEvent().getPersonID());
                 Intent intent = new Intent(getActivity(), PersonActivity.class);
                 startActivity(intent);

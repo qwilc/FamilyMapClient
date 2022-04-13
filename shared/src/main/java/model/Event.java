@@ -182,7 +182,7 @@ public class Event extends Model implements Comparable {
             return 1;
         }
         else if(this.getYear() == event.getYear()) {
-            return this.getEventType().compareTo(event.getEventType());
+            return this.getEventType().toLowerCase().compareTo(event.getEventType().toLowerCase());
         }
         else {
             return -1;

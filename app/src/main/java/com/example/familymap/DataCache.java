@@ -35,8 +35,9 @@ public class DataCache {
 
     private static boolean isEventActivity = false;
     private static Person selectedPerson;
-    private static List<FamilyMember> family;
     private static Event selectedEvent;
+    private static Event savedSelectedEvent;
+    private static List<FamilyMember> family;
 
     //private static boolean areUnappliedSettings = false; TODO: Could do this right if time
     private static boolean showSpouseLines; //TODO: Will DataCache get wiped when the app closes? If so, need to update on reopening
@@ -132,6 +133,17 @@ public class DataCache {
 
     public static void setSelectedEvent(Event selectedEvent) {
         DataCache.selectedEvent = selectedEvent;
+    }
+
+    public static void saveSelectedEvent() {
+        savedSelectedEvent = selectedEvent;
+    }
+
+    public static void loadSavedEvent() {
+        if(savedSelectedEvent != null) {
+            selectedEvent = savedSelectedEvent;
+            setSelectedPerson(selectedEvent.getPersonID());
+        }
     }
 
     public static void initializeSettings(SharedPreferences preferences) {
@@ -440,6 +452,12 @@ public class DataCache {
                 .sizeRes(R.dimen.icon_size);
     }
 
+    public static void resetData() {
+        isEventActivity = false;
+        selectedEvent = null;
+        selectedPerson = null;
+        savedSelectedEvent = null;
+    }
 
     //getEventByID(eventID)
 }
