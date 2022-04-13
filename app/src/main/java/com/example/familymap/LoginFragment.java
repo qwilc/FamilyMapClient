@@ -1,8 +1,8 @@
 package com.example.familymap;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +15,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import logger.LoggerConfig;
@@ -35,7 +34,7 @@ public class LoginFragment extends Fragment {
     private Button registerButton;
     View loginView;
 
-    private Logger logger = Logger.getLogger("LoginFragment");
+    private final Logger logger = Logger.getLogger("LoginFragment");
 
     private static final String LOGIN_SUCCESS_KEY = "LoginSuccessKey";
     private static final String REGISTER_SUCCESS_KEY = "RegisterSuccessKey";
@@ -50,10 +49,12 @@ public class LoginFragment extends Fragment {
 
     private final TextWatcher EditTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
         public void afterTextChanged(Editable editable) {
@@ -64,13 +65,13 @@ public class LoginFragment extends Fragment {
     private void checkFieldsForEmptyValues() {
         EditText serverHostEditText, serverPortEditText, usernameEditText, passwordEditText, firstNameEditText, lastNameEditText, emailEditText;
 
-        serverHostEditText = ( (EditText) loginView.findViewById(R.id.edit_text_server_host) ); //TODO: This code is repeated
-        serverPortEditText = ( (EditText) loginView.findViewById(R.id.edit_text_server_port) );
-        usernameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_username) );
-        passwordEditText = ( (EditText) loginView.findViewById(R.id.edit_text_password) );
-        firstNameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_first_name) );
-        lastNameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_last_name) );
-        emailEditText = ( (EditText) loginView.findViewById(R.id.edit_text_email) );
+        serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host)); //TODO: This code is repeated
+        serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
+        usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
+        passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
+        firstNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_first_name));
+        lastNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_last_name));
+        emailEditText = ((EditText) loginView.findViewById(R.id.edit_text_email));
 
         String serverHost = serverHostEditText.getText().toString();
         String serverPort = serverPortEditText.getText().toString();
@@ -80,26 +81,23 @@ public class LoginFragment extends Fragment {
         String lastName = lastNameEditText.getText().toString();
         String email = emailEditText.getText().toString();
 
-        RadioGroup radioGroup = loginView.findViewById(R.id.gender_radio_group);
-
         signInButton = (Button) loginView.findViewById(R.id.sign_in_button);
         registerButton = (Button) loginView.findViewById(R.id.register_button);
 
-        if(serverHost.equals("") || serverPort.equals("") || username.equals("") || password.equals("")){
+        if (serverHost.equals("") || serverPort.equals("") || username.equals("") || password.equals("")) {
             signInButton.setEnabled(false);
             registerButton.setEnabled(false);
-        } else if(firstName.equals("") || lastName.equals("") || email.equals("")) {
+        } else if (firstName.equals("") || lastName.equals("") || email.equals("")) {
             signInButton.setEnabled(true);
             registerButton.setEnabled(false);
-        }
-        else {
+        } else {
             signInButton.setEnabled(true);
             registerButton.setEnabled(true);
         }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) { //TODO: Do I even need to override this?
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LoggerConfig.configureLogger(logger, Level.FINEST);
     }
@@ -115,42 +113,41 @@ public class LoginFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Handler loginHandler = new Handler() {
-                        @Override
-                        public void handleMessage(Message message) {
-                            Bundle bundle = message.getData();
-                            boolean success = bundle.getBoolean(LOGIN_SUCCESS_KEY, false);
+                Handler loginHandler = new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message message) {
+                        Bundle bundle = message.getData();
+                        boolean success = bundle.getBoolean(LOGIN_SUCCESS_KEY, false);
 
-                            logger.fine("In loginHandler.handleMessage. Success: " + success);
+                        logger.fine("In loginHandler.handleMessage. Success: " + success);
 
-                            String toast;
-                            if (!success) {
-                                toast = "Login Failed";
-                            } else {
-                                toast = DataCache.getUserFullName() + " is logged in";
-                            }
-
-                            logger.finest(getActivity().toString());
-                            logger.finest(getContext().toString());
-                            logger.finer(toast);
-                            Toast.makeText(getActivity(), toast, Toast.LENGTH_SHORT).show();
-
-                            if (success) {
-                                listener.notifyDone();
-                            }
+                        String toast;
+                        if (!success) {
+                            toast = "Login Failed";
+                        } else {
+                            toast = DataCache.getUserFullName() + " is logged in";
                         }
-                    };
 
-                    LoginTask loginTask = new LoginTask(loginHandler, loginView);
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.submit(loginTask);
+                        logger.finest(getActivity().toString());
+                        logger.finer(toast);
+                        Toast.makeText(getActivity(), toast, Toast.LENGTH_SHORT).show();
+
+                        if (success) {
+                            listener.notifyDone();
+                        }
+                    }
+                };
+
+                LoginTask loginTask = new LoginTask(loginHandler, loginView);
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.submit(loginTask);
             }
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Handler registerHandler = new Handler() {
+                Handler registerHandler = new Handler(Looper.getMainLooper()) {
                     @Override
                     public void handleMessage(Message message) {
                         Bundle bundle = message.getData();
@@ -167,7 +164,7 @@ public class LoginFragment extends Fragment {
                         logger.finer(toast);
                         Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
 
-                        if(success) {
+                        if (success) {
                             listener.notifyDone();
                         }
                     }
@@ -181,13 +178,13 @@ public class LoginFragment extends Fragment {
 
         EditText serverHostEditText, serverPortEditText, usernameEditText, passwordEditText, firstNameEditText, lastNameEditText, emailEditText;
 
-        serverHostEditText = ( (EditText) loginView.findViewById(R.id.edit_text_server_host) ); //TODO: This code is repeated
-        serverPortEditText = ( (EditText) loginView.findViewById(R.id.edit_text_server_port) );
-        usernameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_username) );
-        passwordEditText = ( (EditText) loginView.findViewById(R.id.edit_text_password) );
-        firstNameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_first_name) );
-        lastNameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_last_name) );
-        emailEditText = ( (EditText) loginView.findViewById(R.id.edit_text_email) );
+        serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host)); //TODO: This code is repeated
+        serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
+        usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
+        passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
+        firstNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_first_name));
+        lastNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_last_name));
+        emailEditText = ((EditText) loginView.findViewById(R.id.edit_text_email));
 
         serverHostEditText.addTextChangedListener(EditTextWatcher);
         serverPortEditText.addTextChangedListener(EditTextWatcher);
@@ -217,10 +214,10 @@ public class LoginFragment extends Fragment {
             LoggerConfig.configureLogger(logger, Level.FINEST);
             EditText serverHostEditText, serverPortEditText, usernameEditText, passwordEditText;
 
-            serverHostEditText = ( (EditText) loginView.findViewById(R.id.edit_text_server_host) );
-            serverPortEditText = ( (EditText) loginView.findViewById(R.id.edit_text_server_port) );
-            usernameEditText = ( (EditText) loginView.findViewById(R.id.edit_text_username) );
-            passwordEditText = ( (EditText) loginView.findViewById(R.id.edit_text_password) );
+            serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host));
+            serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
+            usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
+            passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
 
             String serverHost = serverHostEditText.getText().toString();
             String serverPort = serverPortEditText.getText().toString();
@@ -235,25 +232,15 @@ public class LoginFragment extends Fragment {
             LoginRegisterResult result = serverProxy.login(request);
             logger.fine("Called login");
 
-            if(result != null) {
-                sendMessage(result);
+            if (result != null) {
+                sendMessage(result, messageHandler);
             }
-        }
-
-        private void sendMessage(LoginRegisterResult result) { //TODO: repeated code
-            Message message = Message.obtain();
-
-            Bundle messageBundle = new Bundle();
-            messageBundle.putBoolean(LOGIN_SUCCESS_KEY, result.isSuccess());
-            message.setData(messageBundle);
-
-            messageHandler.sendMessage(message);
         }
     }
 
     private static class RegisterTask implements Runnable {
-        private Handler messageHandler;
-        private View loginView;
+        private final Handler messageHandler;
+        private final View loginView;
         private final Logger logger = Logger.getLogger("RegisterTask");
 
         public RegisterTask(Handler messageHandler, View loginView) {
@@ -266,45 +253,47 @@ public class LoginFragment extends Fragment {
             LoggerConfig.configureLogger(logger, Level.FINEST);
             logger.fine("In RegisterTask.run");
 
-            String serverHost = ( (EditText) loginView.findViewById(R.id.edit_text_server_host) ).getText().toString();
-            String serverPort = ( (EditText) loginView.findViewById(R.id.edit_text_server_port) ).getText().toString();
+            String serverHost = ((EditText) loginView.findViewById(R.id.edit_text_server_host)).getText().toString();
+            String serverPort = ((EditText) loginView.findViewById(R.id.edit_text_server_port)).getText().toString();
 
             ServerProxy serverProxy = new ServerProxy(serverHost, serverPort);
 
-            String username = ( (EditText) loginView.findViewById(R.id.edit_text_username) ).getText().toString(); //TODO: make createRegisterRequest function
-            String password = ( (EditText) loginView.findViewById(R.id.edit_text_password) ).getText().toString();
-            String firstName = ( (EditText) loginView.findViewById(R.id.edit_text_first_name) ).getText().toString();
-            String lastName = ( (EditText) loginView.findViewById(R.id.edit_text_last_name) ).getText().toString();
-            String email = ( (EditText) loginView.findViewById(R.id.edit_text_email) ).getText().toString();
-
-            RadioGroup genderRadioGroup = ( (RadioGroup) loginView.findViewById(R.id.gender_radio_group) );
-            int selectedRadioID = genderRadioGroup.getCheckedRadioButtonId();
-            String selectedGender = ( (RadioButton) loginView.findViewById(selectedRadioID)).getText().toString();
-            String gender;
-            if(selectedGender.equals("Male")) {
-                gender = "m";
-            }
-            else {
-                gender = "f";
-            }
-
-            RegisterRequest request = new RegisterRequest(username, password, email, firstName, lastName, gender);
+            RegisterRequest request = createRegisterRequest(loginView);
 
             logger.fine("Calling serverProxy.register");
             LoginRegisterResult result = serverProxy.register(request);
 
-            sendMessage(result);
+            sendMessage(result, messageHandler);
         }
 
-        private void sendMessage(LoginRegisterResult result) { //TODO: repeated code
-            assert result != null;
-            Message message = Message.obtain();
+        private RegisterRequest createRegisterRequest(View loginView) {
+            String username = ((EditText) loginView.findViewById(R.id.edit_text_username)).getText().toString();
+            String password = ((EditText) loginView.findViewById(R.id.edit_text_password)).getText().toString();
+            String firstName = ((EditText) loginView.findViewById(R.id.edit_text_first_name)).getText().toString();
+            String lastName = ((EditText) loginView.findViewById(R.id.edit_text_last_name)).getText().toString();
+            String email = ((EditText) loginView.findViewById(R.id.edit_text_email)).getText().toString();
 
-            Bundle messageBundle = new Bundle();
-            messageBundle.putBoolean(REGISTER_SUCCESS_KEY, result.isSuccess());
-            message.setData(messageBundle);
+            RadioGroup genderRadioGroup = ((RadioGroup) loginView.findViewById(R.id.gender_radio_group));
+            int selectedRadioID = genderRadioGroup.getCheckedRadioButtonId();
+            String selectedGender = ((RadioButton) loginView.findViewById(selectedRadioID)).getText().toString();
+            String gender;
+            if (selectedGender.equals("Male")) {
+                gender = "m";
+            } else {
+                gender = "f";
+            }
 
-            messageHandler.sendMessage(message);
+            return new RegisterRequest(username, password, email, firstName, lastName, gender);
         }
+    }
+
+    private static void sendMessage(LoginRegisterResult result, Handler messageHandler) {
+        Message message = Message.obtain();
+
+        Bundle messageBundle = new Bundle();
+        messageBundle.putBoolean(LOGIN_SUCCESS_KEY, result.isSuccess());
+        message.setData(messageBundle);
+
+        messageHandler.sendMessage(message);
     }
 }

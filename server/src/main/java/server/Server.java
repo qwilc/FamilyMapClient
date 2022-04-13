@@ -9,12 +9,12 @@ import java.util.logging.Logger;
 
 public class Server {
     private static final int MAX_WAITING_CONNECTIONS = 12;
-    private HttpServer server;
     private static final Logger logger = Logger.getLogger("Server");
 
     private void run(String portNumber) {
         logger.info("Initializing HTTP Server");
 
+        HttpServer server;
         try {
             server = HttpServer.create(
                     new InetSocketAddress(Integer.parseInt(portNumber)),

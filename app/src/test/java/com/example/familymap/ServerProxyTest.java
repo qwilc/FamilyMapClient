@@ -94,7 +94,7 @@ public class ServerProxyTest {
     }
 
     @Test
-    public void testGetPeoplePass() { //8 ppl 16 events
+    public void testGetPeoplePass() {
         LoginRequest request = new LoginRequest("sheila", "parker");
         serverProxy.login(request);
 
@@ -107,9 +107,18 @@ public class ServerProxyTest {
 
     @Test
     public void testGetPeopleFail() {
-        ServerProxy serverProxy = new ServerProxy("localhost", "8080");
-
+        DataCache.setAuthtoken(null);
         AllPeopleResult result = serverProxy.getPeople();
+
+        assertNotNull(result);
+        assertEquals("Error: Invalid authtoken", result.getMessage());
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    public void testGetEventsFail() {
+        DataCache.setAuthtoken(null);
+        AllEventsResult result = serverProxy.getEvents();
 
         assertNotNull(result);
         assertEquals("Error: Invalid authtoken", result.getMessage());
@@ -126,15 +135,5 @@ public class ServerProxyTest {
         assertNotNull(result);
         assertTrue(result.isSuccess());
         assertEquals(16, result.getData().length);
-    }
-
-    @Test
-    public void testGetEventsFail() {
-        ServerProxy serverProxy = new ServerProxy("localhost", "8080");
-        AllEventsResult result = serverProxy.getEvents();
-
-        assertNotNull(result);
-        assertEquals("Error: Invalid authtoken", result.getMessage());
-        assertFalse(result.isSuccess());
     }
 }

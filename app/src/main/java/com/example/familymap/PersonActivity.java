@@ -9,6 +9,8 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+
 import java.util.List;
 
 import model.Event;
@@ -21,7 +23,10 @@ public class PersonActivity extends UpNavigatingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
-        getSupportActionBar().setTitle("Family Map: Person Details");
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle("Family Map: Person Details");
 
         TextView firstNameView = findViewById(R.id.person_first_name);
         firstNameView.setText(DataCache.getSelectedPerson().getFirstName());
@@ -52,8 +57,8 @@ public class PersonActivity extends UpNavigatingActivity {
         private static final int FAMILY_GROUP_POSITION = 0;
         private static final int EVENT_GROUP_POSITION = 1;
 
-        private List<FamilyMember> family;
-        private List<Event> events;
+        private final List<FamilyMember> family;
+        private final List<Event> events;
 
         public ExpandableListAdapter(List<FamilyMember> family, List<Event> events) {
             this.family = family;

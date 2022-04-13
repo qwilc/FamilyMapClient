@@ -22,8 +22,8 @@ import result.AllPeopleResult;
 
 public class DataCache {
     private static DataCache instance;
-    private static String serverHost;
-    private static String serverPort;
+//    private static String serverHost; TODO: Can prolly delete
+//    private static String serverPort;
     private static String authtoken;
     private static String userId;
 
@@ -39,14 +39,13 @@ public class DataCache {
     private static Event savedSelectedEvent;
     private static List<FamilyMember> family;
 
-    //private static boolean areUnappliedSettings = false; TODO: Could do this right if time
-    private static boolean showSpouseLines; //TODO: Will DataCache get wiped when the app closes? If so, need to update on reopening
-    private static boolean showAncestorLines;
-    private static boolean showLifeStoryLines;
-    private static boolean showFatherSide;
-    private static boolean showMotherSide;
-    private static boolean showMaleEvents;
-    private static boolean showFemaleEvents;
+    private static boolean isSpouseLineEnabled;
+    private static boolean isFamilyTreeEnabled;
+    private static boolean isLifeStoryEnabled;
+    private static boolean isFatherSideEnabled;
+    private static boolean isMotherSideEnabled;
+    private static boolean isMaleEventsEnabled;
+    private static boolean isFemaleEventsEnabled;
 
         private static final float[] colors = {
                 BitmapDescriptorFactory.HUE_YELLOW,
@@ -71,19 +70,19 @@ public class DataCache {
 
     private DataCache() {}
 
-    public String getServerHost() {
-        return serverHost;
-    }
-    public void setServerHost(String serverHost) {
-        DataCache.serverHost = serverHost;
-    }
-
-    public String getServerPort() {
-        return serverPort;
-    }
-    public void setServerPort(String serverPort) {
-        DataCache.serverPort = serverPort;
-    }
+//    public String getServerHost() { TODO: Can prolly delete
+//        return serverHost;
+//    }
+//    public void setServerHost(String serverHost) {
+//        DataCache.serverHost = serverHost;
+//    }
+//
+//    public String getServerPort() {
+//        return serverPort;
+//    }
+//    public void setServerPort(String serverPort) {
+//        DataCache.serverPort = serverPort;
+//    }
 
     public static String getAuthtoken() {
         return authtoken;
@@ -122,7 +121,6 @@ public class DataCache {
     public static void setSelectedPerson(Person selectedPerson) {
         DataCache.selectedPerson = selectedPerson;
     }
-
     public static void setSelectedPerson(String personID) {
         selectedPerson = people.get(personID);
     }
@@ -146,70 +144,77 @@ public class DataCache {
         }
     }
 
+    public static void resetData() {
+        isEventActivity = false;
+        selectedEvent = null;
+        selectedPerson = null;
+        savedSelectedEvent = null;
+    }
+
     public static void initializeSettings(SharedPreferences preferences) {
-        DataCache.setShowLifeStoryLines(preferences.getBoolean("life_story", true));
-        DataCache.setShowAncestorLines(preferences.getBoolean("family_tree", true));
-        DataCache.setShowSpouseLines(preferences.getBoolean("spouse", true));
-        DataCache.setShowFatherSide(preferences.getBoolean("father_side", true));
-        DataCache.setShowMotherSide(preferences.getBoolean("mother_side", true));
-        DataCache.setShowMaleEvents(preferences.getBoolean("male_events", true));
-        DataCache.setShowFemaleEvents(preferences.getBoolean("female_events", true));
+        DataCache.setIsLifeStoryEnabled(preferences.getBoolean("life_story", true));
+        DataCache.setIsFamilyTreeEnabled(preferences.getBoolean("family_tree", true));
+        DataCache.setIsSpouseLineEnabled(preferences.getBoolean("spouse", true));
+        DataCache.setIsFatherSideEnabled(preferences.getBoolean("father_side", true));
+        DataCache.setIsMotherSideEnabled(preferences.getBoolean("mother_side", true));
+        DataCache.setIsMaleEventsEnabled(preferences.getBoolean("male_events", true));
+        DataCache.setIsFemaleEventsEnabled(preferences.getBoolean("female_events", true));
     }
 
-    public static boolean showSpouseLines() {
-        return showSpouseLines;
+    public static boolean isSpouseLineEnabled() {
+        return isSpouseLineEnabled;
     }
 
-    public static void setShowSpouseLines(boolean showSpouseLines) {
-        DataCache.showSpouseLines = showSpouseLines;
+    public static void setIsSpouseLineEnabled(boolean isSpouseLineEnabled) {
+        DataCache.isSpouseLineEnabled = isSpouseLineEnabled;
     }
 
-    public static boolean showAncestorLines() {
-        return showAncestorLines;
+    public static boolean isFamilyTreeEnabled() {
+        return isFamilyTreeEnabled;
     }
 
-    public static void setShowAncestorLines(boolean showAncestorLines) {
-        DataCache.showAncestorLines = showAncestorLines;
+    public static void setIsFamilyTreeEnabled(boolean isFamilyTreeEnabled) {
+        DataCache.isFamilyTreeEnabled = isFamilyTreeEnabled;
     }
 
-    public static boolean showLifeStoryLines() {
-        return showLifeStoryLines;
+    public static boolean isLifeStoryEnabled() {
+        return isLifeStoryEnabled;
     }
 
-    public static void setShowLifeStoryLines(boolean showLifeStoryLines) {
-        DataCache.showLifeStoryLines = showLifeStoryLines;
+    public static void setIsLifeStoryEnabled(boolean isLifeStoryEnabled) {
+        DataCache.isLifeStoryEnabled = isLifeStoryEnabled;
     }
 
-    public static boolean showFatherSide() {
-        return showFatherSide;
+    public static boolean isFatherSideEnabled() {
+        return isFatherSideEnabled;
     }
 
-    public static void setShowFatherSide(boolean showFatherSide) {
-        DataCache.showFatherSide = showFatherSide;
+    public static void setIsFatherSideEnabled(boolean isFatherSideEnabled) {
+        DataCache.isFatherSideEnabled = isFatherSideEnabled;
     }
 
-    public static boolean showMotherSide() {
-        return showMotherSide;
+    public static boolean isMotherSideEnabled() {
+        return isMotherSideEnabled;
     }
 
-    public static void setShowMotherSide(boolean showMotherSide) {
-        DataCache.showMotherSide = showMotherSide;
+    public static void setIsMotherSideEnabled(boolean isMotherSideEnabled) {
+        DataCache.isMotherSideEnabled = isMotherSideEnabled;
     }
 
-    public static boolean showMaleEvents() {
-        return showMaleEvents;
+    public static boolean isMaleEventsEnabled() {
+        return isMaleEventsEnabled;
     }
 
-    public static void setShowMaleEvents(boolean showMaleEvents) {
-        DataCache.showMaleEvents = showMaleEvents;
+    public static void setIsMaleEventsEnabled(boolean isMaleEventsEnabled) {
+        DataCache.isMaleEventsEnabled = isMaleEventsEnabled;
     }
 
-    public static boolean showFemaleEvents() {
-        return showFemaleEvents;
+    public static boolean isFemaleEventsEnabled() {
+        return isFemaleEventsEnabled;
     }
 
-    public static void setShowFemaleEvents(boolean showFemaleEvents) {
-        DataCache.showFemaleEvents = showFemaleEvents;
+    public static void setIsFemaleEventsEnabled(boolean isFemaleEventsEnabled) {
+        DataCache.isFemaleEventsEnabled = isFemaleEventsEnabled;
     }
 
     public static void fillData(ServerProxy serverProxy) {
@@ -263,7 +268,7 @@ public class DataCache {
     private static void fillEventData(ServerProxy serverProxy) {
         AllEventsResult eventResult = serverProxy.getEvents();
         events = new HashMap<>();
-        personEvents = new HashMap<String, List<Event>>();
+        personEvents = new HashMap<>();
         for(Event event : eventResult.getData()) {
             events.put(event.getEventID(), event);
 
@@ -290,8 +295,8 @@ public class DataCache {
     public static void setEventColors() {
         int i = 0;
         eventColors = new HashMap<>();
-        for(String eventID : events.keySet()) { //TODO: Better way to loop? Should I just use an iterator?
-            String eventType = events.get(eventID).getEventType().toLowerCase();
+        for(Event event : events.values()) {
+            String eventType = event.getEventType().toLowerCase();
             Float putReturnValue = eventColors.putIfAbsent(eventType, colors[i]);
             if(putReturnValue == null && i >= colors.length - 1) {
                 i = 0;
@@ -322,16 +327,17 @@ public class DataCache {
 
     public static List<Event> getPersonEvents(Person person) {
         String personID = person.getPersonID();
-        Collections.sort(personEvents.get(personID)); //TODO: Best place to sort?
-        return personEvents.get(personID);
+        return getPersonEvents(personID);
     }
 
     public static List<Event> getPersonEvents(String personID) {
-        Collections.sort(personEvents.get(personID));
-        return personEvents.get(personID);
+        List<Event> events = personEvents.get(personID);
+        assert events != null;
+        Collections.sort(events);
+        return events;
     }
 
-    public static List<FamilyMember> getSelectedPersonFamily() { //TODO: Does this need to be filtered?
+    public static List<FamilyMember> getSelectedPersonFamily() {
         assert selectedPerson != null;
 
         if(family == null) {
@@ -354,7 +360,7 @@ public class DataCache {
     }
 
     private static void addChildrenToFamily () {
-        for(Map.Entry<String, Person> entry : people.entrySet()) { //TODO: Better iteration method?
+        for(Map.Entry<String, Person> entry : people.entrySet()) {
             Person person = entry.getValue();
             assert person != null;
 
@@ -389,16 +395,16 @@ public class DataCache {
         String personID = event.getPersonID();
 
         //If the event falls into a category that is currently disabled, return false; else, return true
-        return !(paternalAncestors.contains(personID) && !DataCache.showFatherSide()
-        || maternalAncestors.contains(personID) && !DataCache.showMotherSide
-        || gender.equals("m") && !DataCache.showMaleEvents()
-        || gender.equals("f") && !DataCache.showFemaleEvents());
+        return !(paternalAncestors.contains(personID) && !DataCache.isFatherSideEnabled()
+        || maternalAncestors.contains(personID) && !DataCache.isMotherSideEnabled
+        || gender.equals("m") && !DataCache.isMaleEventsEnabled()
+        || gender.equals("f") && !DataCache.isFemaleEventsEnabled());
 
     }
 
     private static String getGenderFromEvent(Event event) {
         String personID = event.getPersonID();
-        return getPersonByID(personID).getGender(); //TODO: How much is reasonable for separating out this line into separate variables?
+        return getPersonByID(personID).getGender();
     }
 
     public static List<Person> filterPeopleByQuery(String query) {
@@ -414,9 +420,6 @@ public class DataCache {
         return matches;
     }
 
-    //TODO: Could we theoretically have a class/method that takes in a list of items and
-    // determines what function to call to get the string based on the item's class and
-    // then performs the query filtering?
     public static List<Event> filterEventsByQuery(String query) {
         List<Event> matches = new ArrayList<>();
 
@@ -451,13 +454,4 @@ public class DataCache {
                 .colorRes(R.color.white)
                 .sizeRes(R.dimen.icon_size);
     }
-
-    public static void resetData() {
-        isEventActivity = false;
-        selectedEvent = null;
-        selectedPerson = null;
-        savedSelectedEvent = null;
-    }
-
-    //getEventByID(eventID)
 }

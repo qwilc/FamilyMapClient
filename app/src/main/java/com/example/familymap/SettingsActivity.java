@@ -3,13 +3,9 @@ package com.example.familymap;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
@@ -26,7 +22,9 @@ public class SettingsActivity extends UpNavigatingActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        getSupportActionBar().setTitle("Family Map: Settings");
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle("Family Map: Settings");
 
         if (savedInstanceState == null) {
             logger.fine("Creating new settings fragment");
@@ -53,24 +51,24 @@ public class SettingsActivity extends UpNavigatingActivity {
                     logger.info("In sharedPreferenceChanged");
                     switch(key) {
                         case "life_story":
-                            DataCache.setShowLifeStoryLines(preferences.getBoolean("life_story", true));
+                            DataCache.setIsLifeStoryEnabled(preferences.getBoolean("life_story", true));
                         case "family_tree":
-                            DataCache.setShowAncestorLines(preferences.getBoolean("family_tree", true));
+                            DataCache.setIsFamilyTreeEnabled(preferences.getBoolean("family_tree", true));
                         case "spouse":
-                            DataCache.setShowSpouseLines(preferences.getBoolean("spouse", true));
+                            DataCache.setIsSpouseLineEnabled(preferences.getBoolean("spouse", true));
                         case "father_side":
-                            DataCache.setShowFatherSide(preferences.getBoolean("father_side", true));
+                            DataCache.setIsFatherSideEnabled(preferences.getBoolean("father_side", true));
                         case "mother_side":
-                            DataCache.setShowMotherSide(preferences.getBoolean("mother_side", true));
+                            DataCache.setIsMotherSideEnabled(preferences.getBoolean("mother_side", true));
                         case "male_events":
-                            DataCache.setShowMaleEvents(preferences.getBoolean("male_events", true));
+                            DataCache.setIsMaleEventsEnabled(preferences.getBoolean("male_events", true));
                         case "female_events":
-                            DataCache.setShowFemaleEvents(preferences.getBoolean("female_events", true));
+                            DataCache.setIsFemaleEventsEnabled(preferences.getBoolean("female_events", true));
                     }
                 }
             });
 
-            logger.finer("Mother's side" + String.valueOf(preferences.getBoolean("mother_side", true)));
+            logger.finer("Mother's side" + preferences.getBoolean("mother_side", true));
 
             Preference logout = findPreference("logout");
             assert logout != null;
@@ -81,7 +79,6 @@ public class SettingsActivity extends UpNavigatingActivity {
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     DataCache.resetData();
                     startActivity(intent);
-                    //TODO: MAKE SURE YOU RESET EVERYTHING!!! datacache, maybe settings? not settings and everything else might be reset as it's needed
                     return true;
                 }
             });

@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import model.Event;
 import model.FamilyMember;
@@ -92,7 +91,7 @@ public class DataCacheTest {
     @Test
     public void testFilterFatherSide() {
         setSettingsToTrue();
-        DataCache.setShowFatherSide(false);
+        DataCache.setIsFatherSideEnabled(false);
         checkFatherSideEvents(false);
         checkMotherSideEvents(true);
     }
@@ -100,7 +99,7 @@ public class DataCacheTest {
     @Test
     public void testFilterMotherSide() {
         setSettingsToTrue();
-        DataCache.setShowMotherSide(false);
+        DataCache.setIsMotherSideEnabled(false);
         checkFatherSideEvents(true);
         checkMotherSideEvents(false);
     }
@@ -108,8 +107,8 @@ public class DataCacheTest {
     @Test
     public void testFilterBothSides() {
         setSettingsToTrue();
-        DataCache.setShowFatherSide(false);
-        DataCache.setShowMotherSide(false);
+        DataCache.setIsFatherSideEnabled(false);
+        DataCache.setIsMotherSideEnabled(false);
         checkFatherSideEvents(false);
         checkMotherSideEvents(false);
 
@@ -120,7 +119,7 @@ public class DataCacheTest {
     @Test
     public void testFilterMaleEvents() {
         setSettingsToTrue();
-        DataCache.setShowMaleEvents(false);
+        DataCache.setIsMaleEventsEnabled(false);
         checkEventsByGender("m", false);
         checkEventsByGender("f", true);
     }
@@ -128,7 +127,7 @@ public class DataCacheTest {
     @Test
     public void testFilterFemaleEvents() {
         setSettingsToTrue();
-        DataCache.setShowFemaleEvents(false);
+        DataCache.setIsFemaleEventsEnabled(false);
         checkEventsByGender("m", true);
         checkEventsByGender("f", false);
     }
@@ -136,8 +135,8 @@ public class DataCacheTest {
     @Test
     public void testFilterAllEventsByGender() {
         setSettingsToTrue();
-        DataCache.setShowMaleEvents(false);
-        DataCache.setShowFemaleEvents(false);
+        DataCache.setIsMaleEventsEnabled(false);
+        DataCache.setIsFemaleEventsEnabled(false);
 
         for(String personID : DataCache.getPeople().keySet()) {
             assertFalse(DataCache.isEventShown(DataCache.getPersonFirstEvent(personID)));
@@ -147,8 +146,8 @@ public class DataCacheTest {
     @Test
     public void testMaleAndMotherSideFilters() {
         setSettingsToTrue();
-        DataCache.setShowMaleEvents(false);
-        DataCache.setShowMotherSide(false);
+        DataCache.setIsMaleEventsEnabled(false);
+        DataCache.setIsMotherSideEnabled(false);
 
         assertFalse(DataCache.isEventShown(DataCache.getPersonFirstEvent("Frank_Jones")));
         assertFalse(DataCache.isEventShown(DataCache.getPersonFirstEvent("Mrs_Jones")));
@@ -164,8 +163,8 @@ public class DataCacheTest {
     @Test
     public void testFemaleAndFatherSideFilters() {
         setSettingsToTrue();
-        DataCache.setShowFemaleEvents(false);
-        DataCache.setShowFatherSide(false);
+        DataCache.setIsFemaleEventsEnabled(false);
+        DataCache.setIsFatherSideEnabled(false);
 
         assertFalse(DataCache.isEventShown(DataCache.getPersonFirstEvent("Mrs_Jones")));
         assertFalse(DataCache.isEventShown(DataCache.getPersonFirstEvent("Betty_White")));
@@ -179,10 +178,10 @@ public class DataCacheTest {
     }
 
     private void setSettingsToTrue() {
-        DataCache.setShowFatherSide(true);
-        DataCache.setShowMotherSide(true);
-        DataCache.setShowMaleEvents(true);
-        DataCache.setShowFemaleEvents(true);
+        DataCache.setIsFatherSideEnabled(true);
+        DataCache.setIsMotherSideEnabled(true);
+        DataCache.setIsMaleEventsEnabled(true);
+        DataCache.setIsFemaleEventsEnabled(true);
     }
 
     private void checkFatherSideEvents(boolean shouldEventsShow) {
@@ -208,37 +207,78 @@ public class DataCacheTest {
 
     @Test
     public void testEventSort() {
-        //probably Sheila, except what about the double event?
+        List<Event> testEvents = DataCache.getPersonEvents("Sheila_Parker");
+
+        assertNotNull(testEvents);
+        assertEquals(5, testEvents.size());
+        assertEquals("Sheila_Birth", testEvents.get(0).getEventID());
+        assertEquals("Sheila_Marriage", testEvents.get(1).getEventID());
+        assertEquals("completed asteroids", testEvents.get(2).getEventType().toLowerCase());
+        assertEquals("completed asteroids", testEvents.get(3).getEventType().toLowerCase());
+        assertEquals("Sheila_Death", testEvents.get(4).getEventID());
     }
 
     @Test
     public void testSingleEventSort() {
-        //use Betty White - only death
+        List<Event> testEvents = DataCache.getPersonEvents("Betty_White");
+
+        assertNotNull(testEvents);
+        assertEquals(1, testEvents.size());
+        assertEquals("Betty_Death", testEvents.get(0).getEventID());
     }
 
     @Test
     public void testSameYearEventSort() {
-        //would need to use my own data?
+        List<Event> testEvents = DataCache.getPersonEvents("Mrs_Rodham");
+
+        assertNotNull(testEvents);
+        assertEquals(2, testEvents.size());
+        assertEquals("Mrs_Rodham_Backflip", testEvents.get(0).getEventID());
+        assertEquals("Mrs_Rodham_Java", testEvents.get(1).getEventID());
     }
 
     @Test
     public void testSearchQuery() {
+        setSettingsToTrue();
 
+        String query = "ar";
+        List<Person> matchingPeople = DataCache.filterPeopleByQuery(query);
+        List<Event> matchingEvents = DataCache.filterEventsByQuery(query);
+
+        assertNotNull(matchingPeople);
+        assertEquals(2, matchingPeople.size());
+
+        assertNotNull(matchingEvents);
+        assertEquals(8, matchingEvents.size());
     }
 
     @Test
     public void testNumericalSearchQuery() {
+        setSettingsToTrue();
 
+        String query = "189";
+        List<Person> matchingPeople = DataCache.filterPeopleByQuery(query);
+        List<Event> matchingEvents = DataCache.filterEventsByQuery(query);
+
+        assertNotNull(matchingPeople);
+        assertEquals(0, matchingPeople.size());
+
+        assertNotNull(matchingEvents);
+        assertEquals(3, matchingEvents.size());
     }
 
     @Test
     public void testNoMatchSearchQuery() {
+        setSettingsToTrue();
 
+        String query = "zzz";
+        List<Person> matchingPeople = DataCache.filterPeopleByQuery(query);
+        List<Event> matchingEvents = DataCache.filterEventsByQuery(query);
+
+        assertNotNull(matchingPeople);
+        assertEquals(0, matchingPeople.size());
+
+        assertNotNull(matchingEvents);
+        assertEquals(0, matchingEvents.size());
     }
-
-    @Test
-    public void testNonAlphaNumericSearchQuery() {
-
-    }
-
 }

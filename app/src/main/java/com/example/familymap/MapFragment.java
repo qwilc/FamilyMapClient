@@ -48,9 +48,9 @@ public class MapFragment extends Fragment {
     private final int LIFE_STORY_LINE_COLOR = Color.GREEN;
     private final int SPOUSE_LINE_COLOR = Color.RED;
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(@NonNull GoogleMap googleMap) {
             logger.info("In onMapReady");
 
             map = googleMap;
@@ -127,7 +127,7 @@ public class MapFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.menu, menu);
@@ -146,17 +146,20 @@ public class MapFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem menu) {
         Intent intent;
-        switch(menu.getItemId()) {
-            case R.id.search_menu_item:
-                intent = new Intent(getActivity(), SearchActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.settings_menu_item:
-                intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(menu);
+        int itemId = menu.getItemId();
+
+        if (itemId == R.id.search_menu_item) {
+            intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (itemId == R.id.settings_menu_item) {
+            intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(menu);
         }
     }
 
@@ -225,17 +228,17 @@ public class MapFragment extends Fragment {
     }
 
     private void drawPolyLines() {
-        boolean showSpouseLines = DataCache.showSpouseLines();
+        boolean showSpouseLines = DataCache.isSpouseLineEnabled();
         if(showSpouseLines) {
             drawSpouseLine();
         }
 
-        boolean showLifeStoryLines = DataCache.showLifeStoryLines();
+        boolean showLifeStoryLines = DataCache.isLifeStoryEnabled();
         if(showLifeStoryLines) {
             drawLifeStoryLines();
         }
 
-        boolean showFamilyTreeLines = DataCache.showAncestorLines();
+        boolean showFamilyTreeLines = DataCache.isFamilyTreeEnabled();
         if(showFamilyTreeLines) {
             drawFamilyTreeLines();
         }
@@ -248,58 +251,58 @@ public class MapFragment extends Fragment {
     }
 
     private void drawSpouseLine() {
-        if(DataCache.showMaleEvents() && DataCache.showFemaleEvents()) {
+        if(DataCache.isMaleEventsEnabled() && DataCache.isFemaleEventsEnabled()) {
             Event selectedEvent = DataCache.getSelectedEvent();
             String spouseID = DataCache.getSelectedPerson().getSpouseID();
 
-            drawLineToFirstEvent(spouseID, selectedEvent, SPOUSE_LINE_COLOR, BASE_POLYLINE_WIDTH);
+            drawLineToFirstEvent(spouseID, selectedEvent, SPOUSE_LINE_COLOR);
         }
     }
 
     private void drawFamilyTreeLines() {
-        boolean showMaleEvents = DataCache.showMaleEvents();
-        boolean showFemaleEvents = DataCache.showFemaleEvents();
-        boolean showFatherSide = DataCache.showFatherSide();
-        boolean showMotherSide = DataCache.showMotherSide();
+        boolean showMaleEvents = DataCache.isMaleEventsEnabled();
+        boolean showFemaleEvents = DataCache.isFemaleEventsEnabled();
+        boolean showFatherSide = DataCache.isFatherSideEnabled();
+        boolean showMotherSide = DataCache.isMotherSideEnabled();
 
         Person person = DataCache.getSelectedPerson();
         Event event = DataCache.getSelectedEvent();
 
         String fatherID = person.getFatherID();
         if(fatherID != null && showFatherSide && showMaleEvents) {
-            drawLineToFirstEvent(fatherID, event, FAMILY_TREE_LINE_COLOR, BASE_POLYLINE_WIDTH);
+            drawLineToFirstEvent(fatherID, event, FAMILY_TREE_LINE_COLOR);
             drawAncestorLinesHelper(fatherID, 2);
         }
 
         String motherID = person.getMotherID();
         if(motherID != null && showMotherSide && showFemaleEvents) {
-            drawLineToFirstEvent(motherID, event, FAMILY_TREE_LINE_COLOR, BASE_POLYLINE_WIDTH);
+            drawLineToFirstEvent(motherID, event, FAMILY_TREE_LINE_COLOR);
             drawAncestorLinesHelper(motherID, 2);
         }
     }
 
     private void drawAncestorLinesHelper(String personID, int generation) {
-        boolean showMaleEvents = DataCache.showMaleEvents();
-        boolean showFemaleEvents = DataCache.showFemaleEvents();
+        boolean showMaleEvents = DataCache.isMaleEventsEnabled();
+        boolean showFemaleEvents = DataCache.isFemaleEventsEnabled();
 
         Person person = DataCache.getPersonByID(personID);
 
         String fatherID = person.getFatherID();
         if(fatherID != null && showMaleEvents) {
-            drawLineBetweenFirstEvents(personID, fatherID, FAMILY_TREE_LINE_COLOR, BASE_POLYLINE_WIDTH/generation);
+            drawLineBetweenFirstEvents(personID, fatherID, BASE_POLYLINE_WIDTH/generation);
             drawAncestorLinesHelper(fatherID, generation + 1);
         }
 
         String motherID = person.getMotherID();
         if(motherID != null && showFemaleEvents) {
-            drawLineBetweenFirstEvents(personID, motherID, FAMILY_TREE_LINE_COLOR, BASE_POLYLINE_WIDTH/generation);
+            drawLineBetweenFirstEvents(personID, motherID, BASE_POLYLINE_WIDTH/generation);
             drawAncestorLinesHelper(motherID, generation + 1);
         }
     }
 
     private void drawLifeStoryLines() {
-        boolean showMaleEvents = DataCache.showMaleEvents();
-        boolean showFemaleEvents = DataCache.showFemaleEvents();
+        boolean showMaleEvents = DataCache.isMaleEventsEnabled();
+        boolean showFemaleEvents = DataCache.isFemaleEventsEnabled();
 
         Person person = DataCache.getSelectedPerson();
         String gender = person.getGender();
@@ -310,25 +313,25 @@ public class MapFragment extends Fragment {
                 map.addPolyline(new PolylineOptions()
                         .add(eventToLatLng(personEvents.get(i)), eventToLatLng(personEvents.get(i + 1)))
                         .width(BASE_POLYLINE_WIDTH)
-                        .color(Color.GREEN));
+                        .color(LIFE_STORY_LINE_COLOR));
             }
         }
     }
 
-    private void drawLineToFirstEvent(String personID, Event startingEvent, int color, float width) {
+    private void drawLineToFirstEvent(String personID, Event startingEvent, int color) {
         Event firstEvent = DataCache.getPersonFirstEvent(personID);
         map.addPolyline(new PolylineOptions()
                 .add(eventToLatLng(startingEvent), eventToLatLng(firstEvent))
-                .width(width)
+                .width(BASE_POLYLINE_WIDTH)
                 .color(color));
     }
 
-    private void drawLineBetweenFirstEvents(String personID1, String personID2, int color, float width) {
+    private void drawLineBetweenFirstEvents(String personID1, String personID2, float width) {
         Event firstEvent1 = DataCache.getPersonFirstEvent(personID1);
         Event firstEvent2 = DataCache.getPersonFirstEvent(personID2);
         map.addPolyline(new PolylineOptions()
                 .add(eventToLatLng(firstEvent1), eventToLatLng(firstEvent2))
                 .width(width)
-                .color(color));
+                .color(FAMILY_TREE_LINE_COLOR));
     }
 }

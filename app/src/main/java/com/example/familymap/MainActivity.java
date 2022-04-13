@@ -9,8 +9,7 @@ import android.os.Bundle;
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
-    private Logger logger = Logger.getLogger("MainActivity");
-    private LoginFragment loginFragment;
+    private final Logger logger = Logger.getLogger("MainActivity");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +36,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
         LoginFragment fragment = new LoginFragment();
         fragment.registerListener(this);
         return fragment;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) { //TODO: remove unused functions
-        super.onSaveInstanceState(outState);
     }
 
     @Override

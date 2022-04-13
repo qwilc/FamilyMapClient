@@ -1,15 +1,6 @@
 <resources>
-    <string name="app_name">FamilyMap</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
 
+    <string name="app_name">FamilyMap</string>
     <string name="server_host_prompt">Server Host:</string>
     <string name="server_port_prompt">Server Port:</string>
     <string name="username_prompt">Username:</string>
@@ -25,8 +16,6 @@
     <string name="select_marker_prompt">Select a marker to see event details</string>
     <string name="menu_label_settings">Settings</string>
     <string name="menu_label_search">Search</string>
-    <!-- TODO: Remove this -->
-    <string name="title_activity_settings2">SettingsActivity2</string>
     <string name="male_label">Male</string>
     <string name="female_label">Female</string>
     <string name="first_name_person_activity">First Name</string>

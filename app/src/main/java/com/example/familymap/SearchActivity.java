@@ -1,6 +1,7 @@
 package com.example.familymap;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,9 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,10 @@ public class SearchActivity extends UpNavigatingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        getSupportActionBar().setTitle("Family Map: Search");
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle("Family Map: Search");
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
@@ -120,8 +121,6 @@ public class SearchActivity extends UpNavigatingActivity {
         private final ImageView icon;
 
         private final int viewType;
-        private Person person;
-        private Event event;
 
         SearchViewHolder(View view, int viewType) {
             super(view);
@@ -142,7 +141,6 @@ public class SearchActivity extends UpNavigatingActivity {
         }
 
         private void bind(Person person) {
-            this.person = person;
             name.setText(DataCache.getFullName(person.getPersonID()));
             icon.setImageDrawable(DataCache.getGenderIcon(person, SearchActivity.this));
 
@@ -150,7 +148,6 @@ public class SearchActivity extends UpNavigatingActivity {
         }
 
         private void bind(Event event) {
-            this.event = event;
             name.setText(DataCache.eventInfoString(event));
             details.setText(DataCache.getFullName(event.getPersonID()));
             icon.setImageDrawable(DataCache.getEventIcon(SearchActivity.this));

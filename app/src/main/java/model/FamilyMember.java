@@ -1,9 +1,9 @@
 package model;
 
 public class FamilyMember {
-    private String fullName;
-    private String relation;
-    private String personID;
+    private final String fullName;
+    private final String relation;
+    private final String personID;
 
     public FamilyMember(String fullName, String relation, String personID) {
         this.fullName = fullName;
@@ -15,23 +15,11 @@ public class FamilyMember {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public String getRelation() {
         return relation;
     }
 
-    public void setRelation(String relation) {
-        this.relation = relation;
-    }
-
     public String getPersonID() {
         return personID;
-    }
-
-    public void setPersonID(String personID) {
-        this.personID = personID;
     }
 }

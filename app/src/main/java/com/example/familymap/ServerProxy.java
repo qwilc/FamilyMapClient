@@ -1,9 +1,5 @@
 package com.example.familymap;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,9 +17,7 @@ import request.LoginRequest;
 import request.RegisterRequest;
 import result.AllEventsResult;
 import result.AllPeopleResult;
-import result.EventResult;
 import result.LoginRegisterResult;
-import result.PersonResult;
 
 public class ServerProxy {
     private final String serverHost;
@@ -108,21 +102,6 @@ public class ServerProxy {
         return null;
     }
 
-    //TODO: Unused so I probably can delete
-//    public PersonResult getPerson(String personId) {
-//        try {
-//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person/" + personId);
-//            HttpURLConnection http = setUpHttpConnection(url, "GET");
-//
-//            Gson gson = new Gson();
-//            return gson.fromJson(getResponseString(http), PersonResult.class);
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
     public AllEventsResult getEvents () {
         try {
             URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
@@ -136,21 +115,6 @@ public class ServerProxy {
         }
         return null;
     }
-
-    //TODO: unused and can probably delete
-//    public EventResult getEvent(String eventId) {
-//        try {
-//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event/" + eventId);
-//            HttpURLConnection http = setUpHttpConnection(url, "GET");
-//
-//            Gson gson = new Gson();
-//            return gson.fromJson(getResponseString(http), EventResult.class);
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
 
     private HttpURLConnection setUpHttpConnection(URL url, String method) throws IOException {
         HttpURLConnection http = (HttpURLConnection)url.openConnection();
@@ -176,7 +140,6 @@ public class ServerProxy {
     }
 
     private String getResponseString(HttpURLConnection http) throws IOException {
-        Gson gson = new Gson();
         String respData;
         if(http.getResponseCode() == HttpURLConnection.HTTP_OK) {
             logger.fine("Successful login");
