@@ -165,6 +165,7 @@ public class SearchActivity extends UpNavigatingActivity {
             if(viewType == PERSON_ITEM_VIEW_TYPE) {
                 Person person = (Person) view.getTag();
                 DataCache.setSelectedPerson(person);
+                DataCache.setSelectedEvent(null);
 
                 intent = new Intent(SearchActivity.this, PersonActivity.class);
             }

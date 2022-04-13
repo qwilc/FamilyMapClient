@@ -108,19 +108,20 @@ public class ServerProxy {
         return null;
     }
 
-    public PersonResult getPerson(String personId) {
-        try {
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person/" + personId);
-            HttpURLConnection http = setUpHttpConnection(url, "GET");
-
-            Gson gson = new Gson();
-            return gson.fromJson(getResponseString(http), PersonResult.class);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    //TODO: Unused so I probably can delete
+//    public PersonResult getPerson(String personId) {
+//        try {
+//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person/" + personId);
+//            HttpURLConnection http = setUpHttpConnection(url, "GET");
+//
+//            Gson gson = new Gson();
+//            return gson.fromJson(getResponseString(http), PersonResult.class);
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public AllEventsResult getEvents () {
         try {
@@ -136,19 +137,20 @@ public class ServerProxy {
         return null;
     }
 
-    public EventResult getEvent(String eventId) {
-        try {
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event/" + eventId);
-            HttpURLConnection http = setUpHttpConnection(url, "GET");
-
-            Gson gson = new Gson();
-            return gson.fromJson(getResponseString(http), EventResult.class);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    //TODO: unused and can probably delete
+//    public EventResult getEvent(String eventId) {
+//        try {
+//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event/" + eventId);
+//            HttpURLConnection http = setUpHttpConnection(url, "GET");
+//
+//            Gson gson = new Gson();
+//            return gson.fromJson(getResponseString(http), EventResult.class);
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     private HttpURLConnection setUpHttpConnection(URL url, String method) throws IOException {
         HttpURLConnection http = (HttpURLConnection)url.openConnection();

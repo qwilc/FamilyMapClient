@@ -39,7 +39,6 @@ public class PersonActivity extends UpNavigatingActivity {
 
         ExpandableListView expandableListView = findViewById(R.id.expandableListView);
 
-        DataCache.setSelectedPersonFamily(); //TODO: Should I combine set/get methods?
         List<FamilyMember> family = DataCache.getSelectedPersonFamily();
         List<Event> events = DataCache.getPersonEvents(DataCache.getSelectedPerson());
 

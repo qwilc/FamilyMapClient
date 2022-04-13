@@ -197,7 +197,9 @@ public class MapFragment extends Fragment {
         if(map != null) {
             map.clear();
             addEventMarkers();
-            if(DataCache.getSelectedEvent() != null) {
+
+            Event selectedEvent = DataCache.getSelectedEvent();
+            if(selectedEvent != null && DataCache.isEventShown(selectedEvent)) {
                 drawPolyLines();
             }
         }

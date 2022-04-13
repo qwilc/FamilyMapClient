@@ -26,11 +26,13 @@ public class DataCache {
     private static String serverPort;
     private static String authtoken;
     private static String userId;
+
     private static Map<String, Person> people;
     private static Map<String, Event> events;
     private static Map<String, List<Event>> personEvents;
     private static HashSet<String> paternalAncestors;
     private static HashSet<String> maternalAncestors;
+
     private static boolean isEventActivity = false;
     private static Person selectedPerson;
     private static List<FamilyMember> family;
@@ -44,18 +46,6 @@ public class DataCache {
     private static boolean showMotherSide;
     private static boolean showMaleEvents;
     private static boolean showFemaleEvents;
-
-//    private static final float[] colors = {
-//            BitmapDescriptorFactory.HUE_AZURE,
-//            BitmapDescriptorFactory.HUE_BLUE,
-//            BitmapDescriptorFactory.HUE_CYAN,
-//            BitmapDescriptorFactory.HUE_GREEN,
-//            BitmapDescriptorFactory.HUE_MAGENTA,
-//            BitmapDescriptorFactory.HUE_ORANGE,
-//            BitmapDescriptorFactory.HUE_RED,
-//            BitmapDescriptorFactory.HUE_ROSE,
-//            BitmapDescriptorFactory.HUE_VIOLET,
-//            BitmapDescriptorFactory.HUE_YELLOW };
 
         private static final float[] colors = {
                 BitmapDescriptorFactory.HUE_YELLOW,
@@ -114,6 +104,14 @@ public class DataCache {
 
     public static Map<String, Event> getEvents() {
         return events;
+    }
+
+    public static HashSet<String> getPaternalAncestors() {
+        return paternalAncestors;
+    }
+
+    public static HashSet<String> getMaternalAncestors() {
+        return maternalAncestors;
     }
 
     public static Person getSelectedPerson() {
@@ -316,11 +314,12 @@ public class DataCache {
         return personEvents.get(personID);
     }
 
-    public static List<FamilyMember> getSelectedPersonFamily() {
-        return family;
-    };
+    public static List<Event> getPersonEvents(String personID) {
+        Collections.sort(personEvents.get(personID));
+        return personEvents.get(personID);
+    }
 
-    public static void setSelectedPersonFamily() { //TODO: Does this need to be filtered?
+    public static List<FamilyMember> getSelectedPersonFamily() { //TODO: Does this need to be filtered?
         assert selectedPerson != null;
 
         if(family == null) {
@@ -339,6 +338,7 @@ public class DataCache {
         addToFamily(spouseID, "Spouse");
         addChildrenToFamily();
 
+        return family;
     }
 
     private static void addChildrenToFamily () {
@@ -369,7 +369,7 @@ public class DataCache {
     }
 
     public static Event getPersonFirstEvent(String personID) {
-        return getPersonEvents(getPersonByID(personID)).get(0);
+        return getPersonEvents(personID).get(0);
     }
 
     public static boolean isEventShown(Event event) {
@@ -410,7 +410,7 @@ public class DataCache {
 
         for(Event event : events.values()) {
             String details = eventInfoString(event).toLowerCase();
-            if(details.contains(query)) {
+            if(details.contains(query) && isEventShown(event)) {
                 matches.add(event);
             }
         }
