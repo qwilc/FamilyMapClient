@@ -18,6 +18,7 @@ import model.FamilyMember;
 import model.Person;
 
 public class PersonActivity extends UpNavigatingActivity {
+    private final DataCache dataCache = DataCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +30,13 @@ public class PersonActivity extends UpNavigatingActivity {
         actionBar.setTitle("Family Map: Person Details");
 
         TextView firstNameView = findViewById(R.id.person_first_name);
-        firstNameView.setText(DataCache.getSelectedPerson().getFirstName());
+        firstNameView.setText(dataCache.getSelectedPerson().getFirstName());
 
         TextView lastNameView = findViewById(R.id.person_last_name);
-        lastNameView.setText(DataCache.getSelectedPerson().getLastName());
+        lastNameView.setText(dataCache.getSelectedPerson().getLastName());
 
         TextView genderView = findViewById(R.id.person_gender);
-        if(DataCache.getSelectedPerson().getGender().equals("m")) {
+        if(dataCache.getSelectedPerson().getGender().equals("m")) {
             genderView.setText(R.string.male_label);
         }
         else {
@@ -44,8 +45,8 @@ public class PersonActivity extends UpNavigatingActivity {
 
         ExpandableListView expandableListView = findViewById(R.id.expandableListView);
 
-        List<FamilyMember> family = DataCache.getSelectedPersonFamily();
-        List<Event> events = DataCache.getPersonEvents(DataCache.getSelectedPerson());
+        List<FamilyMember> family = dataCache.getSelectedPersonFamily();
+        List<Event> events = dataCache.getPersonEvents(dataCache.getSelectedPerson());
 
         expandableListView.setAdapter(new ExpandableListAdapter(family, events));
         expandableListView.expandGroup(0);
@@ -157,14 +158,14 @@ public class PersonActivity extends UpNavigatingActivity {
             personRelationView.setText(family.get(childPosition).getRelation());
 
             ImageView personIconView = personItemView.findViewById(R.id.person_item_icon);
-            Person person = DataCache.getPersonByID(family.get(childPosition).getPersonID());
-            personIconView.setImageDrawable(DataCache.getGenderIcon(person, PersonActivity.this));
+            Person person = dataCache.getPersonByID(family.get(childPosition).getPersonID());
+            personIconView.setImageDrawable(dataCache.getGenderIcon(person, PersonActivity.this));
 
             personItemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
                     //Toast.makeText(PersonActivity.this, "You clicked " + personNameView.getText(), Toast.LENGTH_SHORT).show();
-                    DataCache.setSelectedPerson(family.get(childPosition).getPersonID());
+                    dataCache.setSelectedPerson(family.get(childPosition).getPersonID());
                     Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
                     startActivity(intent);
                 }
@@ -172,21 +173,21 @@ public class PersonActivity extends UpNavigatingActivity {
         }
 
         private void initializeEventView(View eventItemView, final int childPosition) {
-            if(DataCache.isEventShown(events.get(childPosition))) {
+            if(dataCache.isEventShown(events.get(childPosition))) {
                 TextView eventDetailView = eventItemView.findViewById(R.id.event_item_details);
-                eventDetailView.setText(DataCache.eventInfoString(events.get(childPosition)));
+                eventDetailView.setText(dataCache.eventInfoString(events.get(childPosition)));
 
                 TextView eventPersonView = eventItemView.findViewById(R.id.event_item_person);
-                eventPersonView.setText(DataCache.getFullName(events.get(childPosition).getPersonID()));
+                eventPersonView.setText(dataCache.getFullName(events.get(childPosition).getPersonID()));
 
                 ImageView eventIconView = eventItemView.findViewById(R.id.event_item_icon);
-                eventIconView.setImageDrawable(DataCache.getEventIcon(PersonActivity.this));
+                eventIconView.setImageDrawable(dataCache.getEventIcon(PersonActivity.this));
 
                 eventItemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //Toast.makeText(PersonActivity.this, "You clicked " + eventDetailView.getText(), Toast.LENGTH_SHORT).show();
-                        DataCache.setSelectedEvent(events.get(childPosition));
+                        dataCache.setSelectedEvent(events.get(childPosition));
                         Intent intent = new Intent(PersonActivity.this, EventActivity.class);
                         startActivity(intent);
                     }

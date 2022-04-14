@@ -20,12 +20,14 @@ import model.Event;
 import model.Person;
 
 public class SearchActivity extends UpNavigatingActivity {
+    private final DataCache dataCache = DataCache.getInstance();
+
     private static final int PERSON_ITEM_VIEW_TYPE = 0;
     private static final int EVENT_ITEM_VIEW_TYPE = 1;
 
     private SearchView searchView;
     private RecyclerView recyclerView;
-    private List<Person> people = new ArrayList<>(); //TODO: Should I really initialize these here?
+    private List<Person> people = new ArrayList<>();
     private List<Event> events = new ArrayList<>();
 
     @Override
@@ -63,8 +65,8 @@ public class SearchActivity extends UpNavigatingActivity {
         String query = String.valueOf(searchView.getQuery()).toLowerCase();
 
         if(!query.equals("")) {
-            people = DataCache.filterPeopleByQuery(query);
-            events = DataCache.filterEventsByQuery(query);
+            people = dataCache.filterPeopleByQuery(query);
+            events = dataCache.filterEventsByQuery(query);
             SearchAdapter adapter = new SearchAdapter(people, events);
             recyclerView.setAdapter(adapter);
         }
@@ -141,16 +143,16 @@ public class SearchActivity extends UpNavigatingActivity {
         }
 
         private void bind(Person person) {
-            name.setText(DataCache.getFullName(person.getPersonID()));
-            icon.setImageDrawable(DataCache.getGenderIcon(person, SearchActivity.this));
+            name.setText(dataCache.getFullName(person.getPersonID()));
+            icon.setImageDrawable(dataCache.getGenderIcon(person, SearchActivity.this));
 
             itemView.setTag(person);
         }
 
         private void bind(Event event) {
-            name.setText(DataCache.eventInfoString(event));
-            details.setText(DataCache.getFullName(event.getPersonID()));
-            icon.setImageDrawable(DataCache.getEventIcon(SearchActivity.this));
+            name.setText(dataCache.eventInfoString(event));
+            details.setText(dataCache.getFullName(event.getPersonID()));
+            icon.setImageDrawable(dataCache.getEventIcon(SearchActivity.this));
 
             itemView.setTag(event);
         }
@@ -161,15 +163,15 @@ public class SearchActivity extends UpNavigatingActivity {
 
             if(viewType == PERSON_ITEM_VIEW_TYPE) {
                 Person person = (Person) view.getTag();
-                DataCache.setSelectedPerson(person);
-                DataCache.setSelectedEvent(null);
+                dataCache.setSelectedPerson(person);
+                dataCache.setSelectedEvent(null);
 
                 intent = new Intent(SearchActivity.this, PersonActivity.class);
             }
             else {
                 Event event = (Event) view.getTag();
-                DataCache.setSelectedEvent(event);
-                DataCache.setSelectedPerson(event.getPersonID());
+                dataCache.setSelectedEvent(event);
+                dataCache.setSelectedPerson(event.getPersonID());
 
                 intent = new Intent(SearchActivity.this, EventActivity.class);
             }

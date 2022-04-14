@@ -40,6 +40,7 @@ import model.Person;
 
 public class MapFragment extends Fragment {
     private final Logger logger = Logger.getLogger("MapFragment");
+    private final DataCache dataCache = DataCache.getInstance();
     private View mapView;
     private GoogleMap map;
 
@@ -56,10 +57,10 @@ public class MapFragment extends Fragment {
             map = googleMap;
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            DataCache.initializeSettings(preferences);
+            dataCache.initializeSettings(preferences);
 
-            if(DataCache.isEventActivity()) {
-                Event centerEvent = DataCache.getSelectedEvent();
+            if(dataCache.isEventActivity()) {
+                Event centerEvent = dataCache.getSelectedEvent();
 
                 centerCamera(centerEvent);
                 updateEventDetailsView(centerEvent);
@@ -78,8 +79,8 @@ public class MapFragment extends Fragment {
             public boolean onMarkerClick(@NonNull Marker marker) {
                 Event event = (Event) marker.getTag();
                 assert event != null;
-                DataCache.setSelectedEvent(event);
-                DataCache.setSelectedPerson(event.getPersonID());
+                dataCache.setSelectedEvent(event);
+                dataCache.setSelectedPerson(event.getPersonID());
 
                 map.clear();
                 addEventMarkers();
@@ -100,11 +101,11 @@ public class MapFragment extends Fragment {
 
     private void updateEventDetailsView(Event event) {
         String personID = event.getPersonID();
-        String personName = DataCache.getFullName(personID);
-        String personGender = DataCache.getPersonByID(personID).getGender();
+        String personName = dataCache.getFullName(personID);
+        String personGender = dataCache.getPersonByID(personID).getGender();
 
         String eventDetails = personName + " (" + personGender + ")\n"
-                + DataCache.eventInfoString(event);
+                + dataCache.eventInfoString(event);
 
         mapView.findViewById(R.id.view_select_marker_prompt).setVisibility(View.GONE);
         TextView eventDetailsView = (mapView.findViewById(R.id.view_event_details) );
@@ -112,14 +113,14 @@ public class MapFragment extends Fragment {
         eventDetailsView.setVisibility(View.VISIBLE);
 
         ImageView eventIconView = mapView.findViewById(R.id.event_details_icon);
-        eventIconView.setImageDrawable(DataCache.getGenderIcon(DataCache.getSelectedPerson(), getContext()));
+        eventIconView.setImageDrawable(dataCache.getGenderIcon(dataCache.getSelectedPerson(), getContext()));
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(!DataCache.isEventActivity()) {
+        if(!dataCache.isEventActivity()) {
             setHasOptionsMenu(true);
         }
 
@@ -175,8 +176,8 @@ public class MapFragment extends Fragment {
         eventDetailsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataCache.saveSelectedEvent();
-                DataCache.setSelectedPerson(DataCache.getSelectedEvent().getPersonID());
+                dataCache.saveSelectedEvent();
+                dataCache.setSelectedPerson(dataCache.getSelectedEvent().getPersonID());
                 Intent intent = new Intent(getActivity(), PersonActivity.class);
                 startActivity(intent);
             }
@@ -198,23 +199,28 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        dataCache.initializeSettings(preferences);
+
         if(map != null) {
+            logger.finest(dataCache.getSelectedPerson().getPersonID());
             map.clear();
             addEventMarkers();
 
-            Event selectedEvent = DataCache.getSelectedEvent();
-            if(selectedEvent != null && DataCache.isEventShown(selectedEvent)) {
+            Event selectedEvent = dataCache.getSelectedEvent();
+            if(selectedEvent != null && dataCache.isEventShown(selectedEvent)) {
                 drawPolyLines();
             }
         }
     }
 
     private void addEventMarkers() {
-        for(Event event : DataCache.getEvents().values()) {
+        for(Event event : dataCache.getEvents().values()) {
             assert event != null;
 
-            if (DataCache.isEventShown(event)) {
-                Float eventColor = DataCache.getEventColors().get(event.getEventType().toLowerCase());
+            if (dataCache.isEventShown(event)) {
+                Float eventColor = dataCache.getEventColors().get(event.getEventType().toLowerCase());
                 assert eventColor != null;
 
                 Marker marker = map.addMarker(new MarkerOptions()
@@ -228,17 +234,17 @@ public class MapFragment extends Fragment {
     }
 
     private void drawPolyLines() {
-        boolean showSpouseLines = DataCache.isSpouseLineEnabled();
+        boolean showSpouseLines = dataCache.isSpouseLineEnabled();
         if(showSpouseLines) {
             drawSpouseLine();
         }
 
-        boolean showLifeStoryLines = DataCache.isLifeStoryEnabled();
+        boolean showLifeStoryLines = dataCache.isLifeStoryEnabled();
         if(showLifeStoryLines) {
             drawLifeStoryLines();
         }
 
-        boolean showFamilyTreeLines = DataCache.isFamilyTreeEnabled();
+        boolean showFamilyTreeLines = dataCache.isFamilyTreeEnabled();
         if(showFamilyTreeLines) {
             drawFamilyTreeLines();
         }
@@ -251,22 +257,22 @@ public class MapFragment extends Fragment {
     }
 
     private void drawSpouseLine() {
-        if(DataCache.isMaleEventsEnabled() && DataCache.isFemaleEventsEnabled()) {
-            Event selectedEvent = DataCache.getSelectedEvent();
-            String spouseID = DataCache.getSelectedPerson().getSpouseID();
+        if(dataCache.isMaleEventsEnabled() && dataCache.isFemaleEventsEnabled()) {
+            Event selectedEvent = dataCache.getSelectedEvent();
+            String spouseID = dataCache.getSelectedPerson().getSpouseID();
 
             drawLineToFirstEvent(spouseID, selectedEvent, SPOUSE_LINE_COLOR);
         }
     }
 
     private void drawFamilyTreeLines() {
-        boolean showMaleEvents = DataCache.isMaleEventsEnabled();
-        boolean showFemaleEvents = DataCache.isFemaleEventsEnabled();
-        boolean showFatherSide = DataCache.isFatherSideEnabled();
-        boolean showMotherSide = DataCache.isMotherSideEnabled();
+        boolean showMaleEvents = dataCache.isMaleEventsEnabled();
+        boolean showFemaleEvents = dataCache.isFemaleEventsEnabled();
+        boolean showFatherSide = dataCache.isFatherSideEnabled();
+        boolean showMotherSide = dataCache.isMotherSideEnabled();
 
-        Person person = DataCache.getSelectedPerson();
-        Event event = DataCache.getSelectedEvent();
+        Person person = dataCache.getSelectedPerson();
+        Event event = dataCache.getSelectedEvent();
 
         String fatherID = person.getFatherID();
         if(fatherID != null && showFatherSide && showMaleEvents) {
@@ -282,10 +288,10 @@ public class MapFragment extends Fragment {
     }
 
     private void drawAncestorLinesHelper(String personID, int generation) {
-        boolean showMaleEvents = DataCache.isMaleEventsEnabled();
-        boolean showFemaleEvents = DataCache.isFemaleEventsEnabled();
+        boolean showMaleEvents = dataCache.isMaleEventsEnabled();
+        boolean showFemaleEvents = dataCache.isFemaleEventsEnabled();
 
-        Person person = DataCache.getPersonByID(personID);
+        Person person = dataCache.getPersonByID(personID);
 
         String fatherID = person.getFatherID();
         if(fatherID != null && showMaleEvents) {
@@ -301,14 +307,14 @@ public class MapFragment extends Fragment {
     }
 
     private void drawLifeStoryLines() {
-        boolean showMaleEvents = DataCache.isMaleEventsEnabled();
-        boolean showFemaleEvents = DataCache.isFemaleEventsEnabled();
+        boolean showMaleEvents = dataCache.isMaleEventsEnabled();
+        boolean showFemaleEvents = dataCache.isFemaleEventsEnabled();
 
-        Person person = DataCache.getSelectedPerson();
+        Person person = dataCache.getSelectedPerson();
         String gender = person.getGender();
 
         if(gender.equals("m") && showMaleEvents || gender.equals("f") && showFemaleEvents) {
-            List<Event> personEvents = DataCache.getPersonEvents(person);
+            List<Event> personEvents = dataCache.getPersonEvents(person);
             for (int i = 0; i < personEvents.size() - 1; i++) {
                 map.addPolyline(new PolylineOptions()
                         .add(eventToLatLng(personEvents.get(i)), eventToLatLng(personEvents.get(i + 1)))
@@ -319,7 +325,7 @@ public class MapFragment extends Fragment {
     }
 
     private void drawLineToFirstEvent(String personID, Event startingEvent, int color) {
-        Event firstEvent = DataCache.getPersonFirstEvent(personID);
+        Event firstEvent = dataCache.getPersonFirstEvent(personID);
         map.addPolyline(new PolylineOptions()
                 .add(eventToLatLng(startingEvent), eventToLatLng(firstEvent))
                 .width(BASE_POLYLINE_WIDTH)
@@ -327,8 +333,8 @@ public class MapFragment extends Fragment {
     }
 
     private void drawLineBetweenFirstEvents(String personID1, String personID2, float width) {
-        Event firstEvent1 = DataCache.getPersonFirstEvent(personID1);
-        Event firstEvent2 = DataCache.getPersonFirstEvent(personID2);
+        Event firstEvent1 = dataCache.getPersonFirstEvent(personID1);
+        Event firstEvent2 = dataCache.getPersonFirstEvent(personID2);
         map.addPolyline(new PolylineOptions()
                 .add(eventToLatLng(firstEvent1), eventToLatLng(firstEvent2))
                 .width(width)

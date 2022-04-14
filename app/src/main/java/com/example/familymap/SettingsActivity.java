@@ -16,6 +16,7 @@ import logger.LoggerConfig;
 
 public class SettingsActivity extends UpNavigatingActivity {
     private final Logger logger = Logger.getLogger("SettingsActivity");
+    private static final DataCache dataCache = DataCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class SettingsActivity extends UpNavigatingActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-            DataCache.initializeSettings(preferences);
+            dataCache.initializeSettings(preferences);
 
             preferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
@@ -51,19 +52,19 @@ public class SettingsActivity extends UpNavigatingActivity {
                     logger.info("In sharedPreferenceChanged");
                     switch(key) {
                         case "life_story":
-                            DataCache.setIsLifeStoryEnabled(preferences.getBoolean("life_story", true));
+                            dataCache.setIsLifeStoryEnabled(preferences.getBoolean("life_story", true));
                         case "family_tree":
-                            DataCache.setIsFamilyTreeEnabled(preferences.getBoolean("family_tree", true));
+                            dataCache.setIsFamilyTreeEnabled(preferences.getBoolean("family_tree", true));
                         case "spouse":
-                            DataCache.setIsSpouseLineEnabled(preferences.getBoolean("spouse", true));
+                            dataCache.setIsSpouseLineEnabled(preferences.getBoolean("spouse", true));
                         case "father_side":
-                            DataCache.setIsFatherSideEnabled(preferences.getBoolean("father_side", true));
+                            dataCache.setIsFatherSideEnabled(preferences.getBoolean("father_side", true));
                         case "mother_side":
-                            DataCache.setIsMotherSideEnabled(preferences.getBoolean("mother_side", true));
+                            dataCache.setIsMotherSideEnabled(preferences.getBoolean("mother_side", true));
                         case "male_events":
-                            DataCache.setIsMaleEventsEnabled(preferences.getBoolean("male_events", true));
+                            dataCache.setIsMaleEventsEnabled(preferences.getBoolean("male_events", true));
                         case "female_events":
-                            DataCache.setIsFemaleEventsEnabled(preferences.getBoolean("female_events", true));
+                            dataCache.setIsFemaleEventsEnabled(preferences.getBoolean("female_events", true));
                     }
                 }
             });
@@ -77,7 +78,7 @@ public class SettingsActivity extends UpNavigatingActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     logger.info("In logout onPreferenceClick");
                     Intent intent = new Intent(getActivity(), MainActivity.class);
-                    DataCache.resetData();
+                    dataCache.resetData();
                     startActivity(intent);
                     return true;
                 }

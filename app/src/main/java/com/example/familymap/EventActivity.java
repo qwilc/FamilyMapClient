@@ -6,13 +6,14 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 public class EventActivity extends UpNavigatingActivity {
+    private final DataCache dataCache = DataCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        DataCache.setIsEventActivity(true);
+        dataCache.setIsEventActivity(true);
 
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment fragment = new MapFragment();

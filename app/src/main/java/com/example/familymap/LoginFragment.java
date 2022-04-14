@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 
 import logger.LoggerConfig;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -29,6 +31,7 @@ import request.RegisterRequest;
 import result.LoginRegisterResult;
 
 public class LoginFragment extends Fragment {
+    private final DataCache dataCache = DataCache.getInstance();
     private Listener listener;
     private Button signInButton;
     private Button registerButton;
@@ -65,7 +68,7 @@ public class LoginFragment extends Fragment {
     private void checkFieldsForEmptyValues() {
         EditText serverHostEditText, serverPortEditText, usernameEditText, passwordEditText, firstNameEditText, lastNameEditText, emailEditText;
 
-        serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host)); //TODO: This code is repeated
+        serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host));
         serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
         usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
         passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
@@ -125,7 +128,7 @@ public class LoginFragment extends Fragment {
                         if (!success) {
                             toast = "Login Failed";
                         } else {
-                            toast = DataCache.getUserFullName() + " is logged in";
+                            toast = dataCache.getUserFullName() + " is logged in";
                         }
 
                         logger.finest(getActivity().toString());
@@ -159,7 +162,7 @@ public class LoginFragment extends Fragment {
                         if (!success) {
                             toast = "Registration Failed";
                         } else {
-                            toast = DataCache.getUserFullName() + " is registered";
+                            toast = dataCache.getUserFullName() + " is registered";
                         }
                         logger.finer(toast);
                         Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
@@ -176,27 +179,27 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        EditText serverHostEditText, serverPortEditText, usernameEditText, passwordEditText, firstNameEditText, lastNameEditText, emailEditText;
-
-        serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host)); //TODO: This code is repeated
-        serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
-        usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
-        passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
-        firstNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_first_name));
-        lastNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_last_name));
-        emailEditText = ((EditText) loginView.findViewById(R.id.edit_text_email));
-
-        serverHostEditText.addTextChangedListener(EditTextWatcher);
-        serverPortEditText.addTextChangedListener(EditTextWatcher);
-        usernameEditText.addTextChangedListener(EditTextWatcher);
-        passwordEditText.addTextChangedListener(EditTextWatcher);
-        firstNameEditText.addTextChangedListener(EditTextWatcher);
-        lastNameEditText.addTextChangedListener(EditTextWatcher);
-        emailEditText.addTextChangedListener(EditTextWatcher);
+        addEditTextChangedListeners(loginView);
 
         checkFieldsForEmptyValues();
 
         return loginView;
+    }
+
+    private void addEditTextChangedListeners(View loginView) {
+        List<EditText> editTexts = new ArrayList<>();
+
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_server_host));
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_server_port));
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_username));
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_password));
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_first_name));
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_last_name));
+        editTexts.add((EditText) loginView.findViewById(R.id.edit_text_email));
+
+        for(EditText editText : editTexts) {
+            editText.addTextChangedListener(EditTextWatcher);
+        }
     }
 
     private static class LoginTask implements Runnable {
@@ -212,21 +215,10 @@ public class LoginFragment extends Fragment {
         @Override
         public void run() {
             LoggerConfig.configureLogger(logger, Level.FINEST);
-            EditText serverHostEditText, serverPortEditText, usernameEditText, passwordEditText;
 
-            serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host));
-            serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
-            usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
-            passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
+            LoginRequest request = createLoginRequest(loginView);
 
-            String serverHost = serverHostEditText.getText().toString();
-            String serverPort = serverPortEditText.getText().toString();
-            String username = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-
-            LoginRequest request = new LoginRequest(username, password);
-
-            ServerProxy serverProxy = new ServerProxy(serverHost, serverPort);
+            ServerProxy serverProxy = createServerProxy(loginView);
 
             logger.fine("About to call login");
             LoginRegisterResult result = serverProxy.login(request);
@@ -235,6 +227,16 @@ public class LoginFragment extends Fragment {
             if (result != null) {
                 sendMessage(result, messageHandler);
             }
+        }
+
+        private LoginRequest createLoginRequest(View loginView) {
+            EditText usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
+            EditText passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
+
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+
+            return new LoginRequest(username, password);
         }
     }
 
@@ -253,10 +255,7 @@ public class LoginFragment extends Fragment {
             LoggerConfig.configureLogger(logger, Level.FINEST);
             logger.fine("In RegisterTask.run");
 
-            String serverHost = ((EditText) loginView.findViewById(R.id.edit_text_server_host)).getText().toString();
-            String serverPort = ((EditText) loginView.findViewById(R.id.edit_text_server_port)).getText().toString();
-
-            ServerProxy serverProxy = new ServerProxy(serverHost, serverPort);
+            ServerProxy serverProxy = createServerProxy(loginView);
 
             RegisterRequest request = createRegisterRequest(loginView);
 
@@ -267,11 +266,19 @@ public class LoginFragment extends Fragment {
         }
 
         private RegisterRequest createRegisterRequest(View loginView) {
-            String username = ((EditText) loginView.findViewById(R.id.edit_text_username)).getText().toString();
-            String password = ((EditText) loginView.findViewById(R.id.edit_text_password)).getText().toString();
-            String firstName = ((EditText) loginView.findViewById(R.id.edit_text_first_name)).getText().toString();
-            String lastName = ((EditText) loginView.findViewById(R.id.edit_text_last_name)).getText().toString();
-            String email = ((EditText) loginView.findViewById(R.id.edit_text_email)).getText().toString();
+            EditText usernameEditText, passwordEditText, firstNameEditText, lastNameEditText, emailEditText;
+
+            usernameEditText = ((EditText) loginView.findViewById(R.id.edit_text_username));
+            passwordEditText = ((EditText) loginView.findViewById(R.id.edit_text_password));
+            firstNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_first_name));
+            lastNameEditText = ((EditText) loginView.findViewById(R.id.edit_text_last_name));
+            emailEditText = ((EditText) loginView.findViewById(R.id.edit_text_email));
+
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+            String firstName = firstNameEditText.getText().toString();
+            String lastName = lastNameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
 
             RadioGroup genderRadioGroup = ((RadioGroup) loginView.findViewById(R.id.gender_radio_group));
             int selectedRadioID = genderRadioGroup.getCheckedRadioButtonId();
@@ -285,6 +292,16 @@ public class LoginFragment extends Fragment {
 
             return new RegisterRequest(username, password, email, firstName, lastName, gender);
         }
+    }
+
+    private static ServerProxy createServerProxy(View loginView) {
+        EditText serverHostEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_host));
+        EditText serverPortEditText = ((EditText) loginView.findViewById(R.id.edit_text_server_port));
+
+        String serverHost = serverHostEditText.getText().toString();
+        String serverPort = serverPortEditText.getText().toString();
+
+        return new ServerProxy(serverHost, serverPort);
     }
 
     private static void sendMessage(LoginRegisterResult result, Handler messageHandler) {

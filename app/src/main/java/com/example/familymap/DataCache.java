@@ -22,44 +22,42 @@ import result.AllPeopleResult;
 
 public class DataCache {
     private static DataCache instance;
-//    private static String serverHost; TODO: Can prolly delete
-//    private static String serverPort;
-    private static String authtoken;
-    private static String userId;
+    private String authtoken;
+    private String userId;
 
-    private static Map<String, Person> people;
-    private static Map<String, Event> events;
-    private static Map<String, List<Event>> personEvents;
-    private static HashSet<String> paternalAncestors;
-    private static HashSet<String> maternalAncestors;
+    private Map<String, Person> people;
+    private Map<String, Event> events;
+    private Map<String, List<Event>> personEvents;
+    private HashSet<String> paternalAncestors;
+    private HashSet<String> maternalAncestors;
 
-    private static boolean isEventActivity = false;
-    private static Person selectedPerson;
-    private static Event selectedEvent;
-    private static Event savedSelectedEvent;
-    private static List<FamilyMember> family;
+    private boolean isEventActivity = false;
+    private Person selectedPerson;
+    private Event selectedEvent;
+    private Event savedSelectedEvent;
+    private List<FamilyMember> family;
 
-    private static boolean isSpouseLineEnabled;
-    private static boolean isFamilyTreeEnabled;
-    private static boolean isLifeStoryEnabled;
-    private static boolean isFatherSideEnabled;
-    private static boolean isMotherSideEnabled;
-    private static boolean isMaleEventsEnabled;
-    private static boolean isFemaleEventsEnabled;
+    private boolean isSpouseLineEnabled;
+    private boolean isFamilyTreeEnabled;
+    private boolean isLifeStoryEnabled;
+    private boolean isFatherSideEnabled;
+    private boolean isMotherSideEnabled;
+    private boolean isMaleEventsEnabled;
+    private boolean isFemaleEventsEnabled;
 
-        private static final float[] colors = {
-                BitmapDescriptorFactory.HUE_YELLOW,
-                BitmapDescriptorFactory.HUE_AZURE,
-                BitmapDescriptorFactory.HUE_ROSE,
-                BitmapDescriptorFactory.HUE_GREEN,
-                BitmapDescriptorFactory.HUE_RED,
-                BitmapDescriptorFactory.HUE_BLUE,
-                BitmapDescriptorFactory.HUE_ORANGE,
-                BitmapDescriptorFactory.HUE_VIOLET,
-                BitmapDescriptorFactory.HUE_CYAN,
-                BitmapDescriptorFactory.HUE_MAGENTA,
-             };
-    private static HashMap<String, Float> eventColors;
+    private final float[] colors = {
+            BitmapDescriptorFactory.HUE_YELLOW,
+            BitmapDescriptorFactory.HUE_AZURE,
+            BitmapDescriptorFactory.HUE_ROSE,
+            BitmapDescriptorFactory.HUE_GREEN,
+            BitmapDescriptorFactory.HUE_RED,
+            BitmapDescriptorFactory.HUE_BLUE,
+            BitmapDescriptorFactory.HUE_ORANGE,
+            BitmapDescriptorFactory.HUE_VIOLET,
+            BitmapDescriptorFactory.HUE_CYAN,
+            BitmapDescriptorFactory.HUE_MAGENTA,
+         };
+    private HashMap<String, Float> eventColors;
 
     public static DataCache getInstance() {
         if(instance == null) {
@@ -70,160 +68,146 @@ public class DataCache {
 
     private DataCache() {}
 
-//    public String getServerHost() { TODO: Can prolly delete
-//        return serverHost;
-//    }
-//    public void setServerHost(String serverHost) {
-//        DataCache.serverHost = serverHost;
-//    }
-//
-//    public String getServerPort() {
-//        return serverPort;
-//    }
-//    public void setServerPort(String serverPort) {
-//        DataCache.serverPort = serverPort;
-//    }
-
-    public static String getAuthtoken() {
+    public String getAuthtoken() {
         return authtoken;
     }
-    public static void setAuthtoken(String authtoken) {
-        DataCache.authtoken = authtoken;
+    public void setAuthtoken(String authtoken) {
+        this.authtoken = authtoken;
     }
 
-    public static String getUserID() {
+    public String getUserID() {
         return userId;
     }
-    public static void setUserID(String userID) {
-        DataCache.userId = userID;
+    public void setUserID(String userID) {
+        this.userId = userID;
     }
 
-    public static Map<String, Person> getPeople() {
+    public Map<String, Person> getPeople() {
         return people;
     }
 
-    public static Map<String, Event> getEvents() {
+    public Map<String, Event> getEvents() {
         return events;
     }
 
-    public static HashSet<String> getPaternalAncestors() {
+    public HashSet<String> getPaternalAncestors() {
         return paternalAncestors;
     }
 
-    public static HashSet<String> getMaternalAncestors() {
+    public HashSet<String> getMaternalAncestors() {
         return maternalAncestors;
     }
 
-    public static Person getSelectedPerson() {
+    public Person getSelectedPerson() {
         return selectedPerson;
     }
 
-    public static void setSelectedPerson(Person selectedPerson) {
-        DataCache.selectedPerson = selectedPerson;
+    public void setSelectedPerson(Person selectedPerson) {
+        this.selectedPerson = selectedPerson;
     }
-    public static void setSelectedPerson(String personID) {
+    public void setSelectedPerson(String personID) {
         selectedPerson = people.get(personID);
     }
 
-    public static Event getSelectedEvent() {
+    public Event getSelectedEvent() {
         return selectedEvent;
     }
 
-    public static void setSelectedEvent(Event selectedEvent) {
-        DataCache.selectedEvent = selectedEvent;
+    public void setSelectedEvent(Event selectedEvent) {
+        this.selectedEvent = selectedEvent;
     }
 
-    public static void saveSelectedEvent() {
+    public void saveSelectedEvent() {
         savedSelectedEvent = selectedEvent;
     }
 
-    public static void loadSavedEvent() {
+    public void loadSavedEvent() {
         if(savedSelectedEvent != null) {
             selectedEvent = savedSelectedEvent;
             setSelectedPerson(selectedEvent.getPersonID());
         }
     }
 
-    public static void resetData() {
+    public void resetData() {
         isEventActivity = false;
         selectedEvent = null;
         selectedPerson = null;
         savedSelectedEvent = null;
     }
 
-    public static void initializeSettings(SharedPreferences preferences) {
-        DataCache.setIsLifeStoryEnabled(preferences.getBoolean("life_story", true));
-        DataCache.setIsFamilyTreeEnabled(preferences.getBoolean("family_tree", true));
-        DataCache.setIsSpouseLineEnabled(preferences.getBoolean("spouse", true));
-        DataCache.setIsFatherSideEnabled(preferences.getBoolean("father_side", true));
-        DataCache.setIsMotherSideEnabled(preferences.getBoolean("mother_side", true));
-        DataCache.setIsMaleEventsEnabled(preferences.getBoolean("male_events", true));
-        DataCache.setIsFemaleEventsEnabled(preferences.getBoolean("female_events", true));
+    public void initializeSettings(SharedPreferences preferences) {
+        this.setIsLifeStoryEnabled(preferences.getBoolean("life_story", true));
+        this.setIsFamilyTreeEnabled(preferences.getBoolean("family_tree", true));
+        this.setIsSpouseLineEnabled(preferences.getBoolean("spouse", true));
+        this.setIsFatherSideEnabled(preferences.getBoolean("father_side", true));
+        this.setIsMotherSideEnabled(preferences.getBoolean("mother_side", true));
+        this.setIsMaleEventsEnabled(preferences.getBoolean("male_events", true));
+        this.setIsFemaleEventsEnabled(preferences.getBoolean("female_events", true));
     }
 
-    public static boolean isSpouseLineEnabled() {
+    public boolean isSpouseLineEnabled() {
         return isSpouseLineEnabled;
     }
 
-    public static void setIsSpouseLineEnabled(boolean isSpouseLineEnabled) {
-        DataCache.isSpouseLineEnabled = isSpouseLineEnabled;
+    public void setIsSpouseLineEnabled(boolean isSpouseLineEnabled) {
+        this.isSpouseLineEnabled = isSpouseLineEnabled;
     }
 
-    public static boolean isFamilyTreeEnabled() {
+    public boolean isFamilyTreeEnabled() {
         return isFamilyTreeEnabled;
     }
 
-    public static void setIsFamilyTreeEnabled(boolean isFamilyTreeEnabled) {
-        DataCache.isFamilyTreeEnabled = isFamilyTreeEnabled;
+    public void setIsFamilyTreeEnabled(boolean isFamilyTreeEnabled) {
+        this.isFamilyTreeEnabled = isFamilyTreeEnabled;
     }
 
-    public static boolean isLifeStoryEnabled() {
+    public boolean isLifeStoryEnabled() {
         return isLifeStoryEnabled;
     }
 
-    public static void setIsLifeStoryEnabled(boolean isLifeStoryEnabled) {
-        DataCache.isLifeStoryEnabled = isLifeStoryEnabled;
+    public void setIsLifeStoryEnabled(boolean isLifeStoryEnabled) {
+        this.isLifeStoryEnabled = isLifeStoryEnabled;
     }
 
-    public static boolean isFatherSideEnabled() {
+    public boolean isFatherSideEnabled() {
         return isFatherSideEnabled;
     }
 
-    public static void setIsFatherSideEnabled(boolean isFatherSideEnabled) {
-        DataCache.isFatherSideEnabled = isFatherSideEnabled;
+    public void setIsFatherSideEnabled(boolean isFatherSideEnabled) {
+        this.isFatherSideEnabled = isFatherSideEnabled;
     }
 
-    public static boolean isMotherSideEnabled() {
+    public boolean isMotherSideEnabled() {
         return isMotherSideEnabled;
     }
 
-    public static void setIsMotherSideEnabled(boolean isMotherSideEnabled) {
-        DataCache.isMotherSideEnabled = isMotherSideEnabled;
+    public void setIsMotherSideEnabled(boolean isMotherSideEnabled) {
+        this.isMotherSideEnabled = isMotherSideEnabled;
     }
 
-    public static boolean isMaleEventsEnabled() {
+    public boolean isMaleEventsEnabled() {
         return isMaleEventsEnabled;
     }
 
-    public static void setIsMaleEventsEnabled(boolean isMaleEventsEnabled) {
-        DataCache.isMaleEventsEnabled = isMaleEventsEnabled;
+    public void setIsMaleEventsEnabled(boolean isMaleEventsEnabled) {
+        this.isMaleEventsEnabled = isMaleEventsEnabled;
     }
 
-    public static boolean isFemaleEventsEnabled() {
+    public boolean isFemaleEventsEnabled() {
         return isFemaleEventsEnabled;
     }
 
-    public static void setIsFemaleEventsEnabled(boolean isFemaleEventsEnabled) {
-        DataCache.isFemaleEventsEnabled = isFemaleEventsEnabled;
+    public void setIsFemaleEventsEnabled(boolean isFemaleEventsEnabled) {
+        this.isFemaleEventsEnabled = isFemaleEventsEnabled;
     }
 
-    public static void fillData(ServerProxy serverProxy) {
+    public void fillData(ServerProxy serverProxy) {
         fillPeopleData(serverProxy);
         fillEventData(serverProxy);
         fillAncestorData();
     }
 
-    private static void fillPeopleData(ServerProxy serverProxy) {
+    private void fillPeopleData(ServerProxy serverProxy) {
         AllPeopleResult peopleResult = serverProxy.getPeople();
         people = new HashMap<>();
         for(Person person : peopleResult.getData()) {
@@ -231,7 +215,7 @@ public class DataCache {
         }
     }
 
-    private static void fillAncestorData() {
+    private void fillAncestorData() {
         Person user = getPersonByID(userId);
 
         String fatherID = user.getFatherID();
@@ -245,13 +229,13 @@ public class DataCache {
         }
     }
 
-    private static HashSet<String> getPersonAncestors(String personID) {
+    private HashSet<String> getPersonAncestors(String personID) {
         HashSet<String> ancestors = new HashSet<>();
         getPersonAncestorsHelper(ancestors, personID);
         return ancestors;
     }
 
-    private static void getPersonAncestorsHelper(HashSet<String> ancestors, String personID) {
+    private void getPersonAncestorsHelper(HashSet<String> ancestors, String personID) {
         ancestors.add(personID);
 
         Person person = getPersonByID(personID);
@@ -265,7 +249,7 @@ public class DataCache {
         }
     }
 
-    private static void fillEventData(ServerProxy serverProxy) {
+    private void fillEventData(ServerProxy serverProxy) {
         AllEventsResult eventResult = serverProxy.getEvents();
         events = new HashMap<>();
         personEvents = new HashMap<>();
@@ -279,20 +263,20 @@ public class DataCache {
         setEventColors();
     }
 
-    public static Person getPersonByID(String personID) {
+    public Person getPersonByID(String personID) {
         return people.get(personID);
     }
 
-    public static String getUserFullName() {
+    public String getUserFullName() {
         return getFullName(userId);
     }
 
-    public static String getFullName(String personId) {
+    public String getFullName(String personId) {
         Person person = getPersonByID(personId);
         return person.getFirstName() + " " + person.getLastName();
     }
 
-    public static void setEventColors() {
+    public void setEventColors() {
         int i = 0;
         eventColors = new HashMap<>();
         for(Event event : events.values()) {
@@ -307,37 +291,37 @@ public class DataCache {
         }
     }
 
-    public static Map<String, Float> getEventColors() {
+    public Map<String, Float> getEventColors() {
         return eventColors;
     }
 
-    public static boolean isEventActivity() {
+    public boolean isEventActivity() {
         return isEventActivity;
     }
 
-    public static void setIsEventActivity(boolean isEventActivity) {
-        DataCache.isEventActivity = isEventActivity;
+    public void setIsEventActivity(boolean isEventActivity) {
+        this.isEventActivity = isEventActivity;
     }
 
-    public static String eventInfoString(Event event) {
+    public String eventInfoString(Event event) {
         return event.getEventType().toUpperCase() + ": "
                 + event.getCity() + ", " + event.getCountry()
                 + " (" + event.getYear() + ")";
     }
 
-    public static List<Event> getPersonEvents(Person person) {
+    public List<Event> getPersonEvents(Person person) {
         String personID = person.getPersonID();
         return getPersonEvents(personID);
     }
 
-    public static List<Event> getPersonEvents(String personID) {
+    public List<Event> getPersonEvents(String personID) {
         List<Event> events = personEvents.get(personID);
         assert events != null;
         Collections.sort(events);
         return events;
     }
 
-    public static List<FamilyMember> getSelectedPersonFamily() {
+    public List<FamilyMember> getSelectedPersonFamily() {
         assert selectedPerson != null;
 
         if(family == null) {
@@ -359,7 +343,7 @@ public class DataCache {
         return family;
     }
 
-    private static void addChildrenToFamily () {
+    private void addChildrenToFamily () {
         for(Map.Entry<String, Person> entry : people.entrySet()) {
             Person person = entry.getValue();
             assert person != null;
@@ -379,35 +363,35 @@ public class DataCache {
         }
     }
 
-    private static void addToFamily(String personID, String relation) {
+    private void addToFamily(String personID, String relation) {
         if(personID != null) {
             FamilyMember familyMember = new FamilyMember(getFullName(personID), relation, personID);
             family.add(familyMember);
         }
     }
 
-    public static Event getPersonFirstEvent(String personID) {
+    public Event getPersonFirstEvent(String personID) {
         return getPersonEvents(personID).get(0);
     }
 
-    public static boolean isEventShown(Event event) {
+    public boolean isEventShown(Event event) {
         String gender = getGenderFromEvent(event);
         String personID = event.getPersonID();
 
         //If the event falls into a category that is currently disabled, return false; else, return true
-        return !(paternalAncestors.contains(personID) && !DataCache.isFatherSideEnabled()
-        || maternalAncestors.contains(personID) && !DataCache.isMotherSideEnabled
-        || gender.equals("m") && !DataCache.isMaleEventsEnabled()
-        || gender.equals("f") && !DataCache.isFemaleEventsEnabled());
+        return !(paternalAncestors.contains(personID) && !this.isFatherSideEnabled()
+        || maternalAncestors.contains(personID) && !this.isMotherSideEnabled
+        || gender.equals("m") && !this.isMaleEventsEnabled()
+        || gender.equals("f") && !this.isFemaleEventsEnabled());
 
     }
 
-    private static String getGenderFromEvent(Event event) {
+    private String getGenderFromEvent(Event event) {
         String personID = event.getPersonID();
         return getPersonByID(personID).getGender();
     }
 
-    public static List<Person> filterPeopleByQuery(String query) {
+    public List<Person> filterPeopleByQuery(String query) {
         List<Person> matches = new ArrayList<>();
 
         for(Person person : people.values()) {
@@ -420,7 +404,7 @@ public class DataCache {
         return matches;
     }
 
-    public static List<Event> filterEventsByQuery(String query) {
+    public List<Event> filterEventsByQuery(String query) {
         List<Event> matches = new ArrayList<>();
 
         for(Event event : events.values()) {
@@ -433,7 +417,7 @@ public class DataCache {
         return matches;
     }
 
-    public static IconDrawable getGenderIcon(Person person, Context context) {
+    public IconDrawable getGenderIcon(Person person, Context context) {
         IconDrawable iconDrawable;
         if(person.getGender().equals("m")) {
             iconDrawable = new IconDrawable(context, FontAwesomeIcons.fa_male)
@@ -449,7 +433,7 @@ public class DataCache {
         return iconDrawable;
     }
 
-    public static IconDrawable getEventIcon(Context context) {
+    public IconDrawable getEventIcon(Context context) {
         return new IconDrawable(context, FontAwesomeIcons.fa_map_marker)
                 .colorRes(R.color.white)
                 .sizeRes(R.dimen.icon_size);

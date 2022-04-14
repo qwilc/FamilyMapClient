@@ -20,6 +20,8 @@ import result.AllPeopleResult;
 import result.LoginRegisterResult;
 
 public class ServerProxy {
+    private final DataCache dataCache = DataCache.getInstance();
+
     private final String serverHost;
     private final String serverPort;
     private final Logger logger = Logger.getLogger("ServerProxy");
@@ -55,7 +57,6 @@ public class ServerProxy {
         return null;
     }
 
-    //TODO: Exact same as login except for request parameter and URL. How do I fix this? Parent Request class?
     public LoginRegisterResult register (RegisterRequest request) {
         try {
             URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/register");
@@ -82,9 +83,9 @@ public class ServerProxy {
 
     private void storeSessionData(LoginRegisterResult result) {
         if(result.isSuccess()) {
-            DataCache.setAuthtoken(result.getAuthtoken());
-            DataCache.setUserID(result.getPersonID());
-            DataCache.fillData(this);
+            dataCache.setAuthtoken(result.getAuthtoken());
+            dataCache.setUserID(result.getPersonID());
+            dataCache.fillData(this);
         }
     }
 
@@ -123,8 +124,8 @@ public class ServerProxy {
 
         http.setDoOutput(method.equals("POST"));
 
-        if(DataCache.getAuthtoken() != null) {
-            http.addRequestProperty("Authorization", DataCache.getAuthtoken());
+        if(dataCache.getAuthtoken() != null) {
+            http.addRequestProperty("Authorization", dataCache.getAuthtoken());
         }
 
         logger.finest("About to call http.connect()");

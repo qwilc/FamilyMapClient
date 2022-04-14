@@ -11,6 +11,7 @@ import result.AllPeopleResult;
 import result.LoginRegisterResult;
 
 public class ServerProxyTest {
+    private final DataCache dataCache = DataCache.getInstance();
     private final ServerProxy serverProxy = new ServerProxy("localhost", "8080");
 
     @Test
@@ -25,11 +26,11 @@ public class ServerProxyTest {
         assertNotNull(result.getAuthtoken());
         assertEquals("Sheila_Parker", result.getPersonID());
 
-        assertEquals("Sheila_Parker", DataCache.getUserID());
-        assertNotNull(DataCache.getPeople());
-        assertEquals(8, DataCache.getPeople().size());
-        assertNotNull(DataCache.getEvents());
-        assertEquals(16, DataCache.getEvents().size());
+        assertEquals("Sheila_Parker", dataCache.getUserID());
+        assertNotNull(dataCache.getPeople());
+        assertEquals(8, dataCache.getPeople().size());
+        assertNotNull(dataCache.getEvents());
+        assertEquals(16, dataCache.getEvents().size());
     }
 
     @Test
@@ -107,7 +108,7 @@ public class ServerProxyTest {
 
     @Test
     public void testGetPeopleFail() {
-        DataCache.setAuthtoken(null);
+        dataCache.setAuthtoken(null);
         AllPeopleResult result = serverProxy.getPeople();
 
         assertNotNull(result);
@@ -117,7 +118,7 @@ public class ServerProxyTest {
 
     @Test
     public void testGetEventsFail() {
-        DataCache.setAuthtoken(null);
+        dataCache.setAuthtoken(null);
         AllEventsResult result = serverProxy.getEvents();
 
         assertNotNull(result);
